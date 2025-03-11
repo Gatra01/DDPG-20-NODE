@@ -10,7 +10,7 @@ class GameState:
         self.observation_space=2*nodes + nodes*nodes + 1
         self.action_space=nodes
         self.p=np.random.uniform(0, self.p_max, size=self.nodes)
- '''
+     '''
     def normalisasi_state(data_rate, EE, power, gain, *):
         rate_max=np.max(data_rate) if np.max(data_rate) !=0 else 1
         gain_max=np.max(gain) if np.max(gain) !=0 else 1
@@ -26,7 +26,7 @@ class GameState:
             normalized_power,
             normalized_gain
         ))
-'''
+    '''
         return state
     def ini(self,ini_gain,*, seed: Optional[int] = None, options: Optional[dict] = None):
         power = self.p
@@ -39,7 +39,7 @@ class GameState:
         result_array = np.concatenate((np.array(ini_data_rate), np.array([ini_EE]),np.array(power),ini_gain.flatten()))
         return result_array ,{}
         #tambahin channel gain, disamain kaya algoritma GNN
-'''
+    '''
     def ini(self, ini_gain, *, seed: Optional[int] = None, options: Optional[dict] = None):
         ini_sinr = self.hitung_sinr(ini_gain, self.p)
         ini_data_rate = self.hitung_data_rate(ini_sinr)
@@ -53,7 +53,7 @@ class GameState:
             p_max=self.p_max
         )
         return state, {}
-'''
+    '''
     def generate_channel_gain(self):
         channel_gain = np.random.rayleigh(scale=1, size=(self.nodes, self.nodes))
         return channel_gain
