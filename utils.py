@@ -37,6 +37,9 @@ class Q_Critic(nn.Module):
 
 def evaluate_policy(channel_gain,state, env, agent, turns = 3):
     total_scores = 0
+    total_data_rate = 0
+    total_power = 0
+    total_EE=0
     for j in range(turns):
         #s, info = env.ini()
         done = False
@@ -55,8 +58,12 @@ def evaluate_policy(channel_gain,state, env, agent, turns = 3):
             done = (dw or tr)
 
             total_scores += r
+            total_power += info.get('power', 0)
+            total_data_rate += info.get('rate', 0)
+            total_EE+=info.get('EE',0)
             s = s_next
-    return int(total_scores/turns)
+       
+    return int(total_scores/turns), avg_EE/turns
 
 
 #Just ignore this function~
