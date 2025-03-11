@@ -91,9 +91,9 @@ class GameState:
         fairness = np.var(new_data_rate)  # Variansi untuk mengukur kesenjangan data rate
         reward = ( 5 * EE + np.sum(((np.array(new_data_rate)-self.gamma)*10)) - 3 * fairness - 2 * np.sum(power[power <= 0]) )
         #reward = 5*EE+np.sum(((np.array(new_data_rate)-self.gamma)*10).tolist())+ 5*(self.p_max-total_daya) 
-        for i in power :
-            if i<=0:
-                reward-=8*i
+        #for i in power :
+        #    if i<=0:
+        #        reward-=8*i
 
         return result_array,reward, False,False,{}
     
