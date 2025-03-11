@@ -85,7 +85,7 @@ def main():
             s,info= env.ini(channel_gain, seed=env_seed)  # Do not use opt.seed directly, or it can overfit to opt.seed
             env_seed += 1
             done = False
-            print("ini aku di loop utama")
+            #print("ini aku di loop utama")
             langkah = 0
             '''Interact & trian'''
             while not done:  
@@ -95,7 +95,7 @@ def main():
                 else: 
                     a = agent.select_action(s, deterministic=False)
                 s_next, r, dw, tr, info = env.step(a,channel_gain) # dw: dead&win; tr: truncated
-                if langkah == 200 :
+                if langkah == 150 :
                     tr= True
                 done = (dw or tr)
 
