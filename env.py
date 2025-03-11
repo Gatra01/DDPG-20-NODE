@@ -56,7 +56,7 @@ class GameState:
         total_daya=np.sum(power)
         result_array = np.concatenate((np.array(new_data_rate), np.array([EE]),np.array(power),channel_gain.flatten()))
         fairness = np.var(new_data_rate)  # Variansi untuk mengukur kesenjangan data rate
-        reward = ( 5 * EE + np.sum(((np.array(new_data_rate)-self.gamma)*10)) - 3 * fairness - 2 * np.sum(power[power <= 0])+5*(self.p_max-total_daya)  )
+        reward = ( 5 * EE + np.sum(((np.array(new_data_rate)-self.gamma)*10)) - 3 * fairness - 2 * np.sum(power[power <= 0])+2*(self.p_max-total_daya)  )
         #reward = 5*EE+np.sum(((np.array(new_data_rate)-self.gamma)*10).tolist())+ 5*(self.p_max-total_daya) 
         #for i in power :
         #    if i<=0:
