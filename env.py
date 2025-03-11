@@ -65,6 +65,6 @@ class GameState:
         #    if i<=0:
         #        reward-=8*i
 
-        return result_array,reward, False,False,{}
+        return result_array,reward, False,False,{'power': total_daya,'rate': np.sum(new_data_rate),'EE': EE}
     
     
