@@ -115,7 +115,7 @@ def main():
                     if opt.write: 
                         writer.add_scalar('ep_r', ep_r, global_step=total_steps)
                         writer.add_scalar('avg_ee', avg_ee, global_step=total_steps)
-                    print(f'EnvName:{BrifEnvName[opt.EnvIdex]}, Steps: {int(total_steps/1000)}k, Episode Reward:{ep_r}')
+                    print(f'EnvName:{BrifEnvName[opt.EnvIdex]}, Steps: {int(total_steps/1000)}k, Episode Reward:{ep_r}, Energi efisiensi :{avg_ee}')
 
                 '''save model'''
                 if total_steps % opt.save_interval == 0:
