@@ -10,15 +10,50 @@ class GameState:
         self.observation_space=nodes+1
         self.action_space=nodes
         self.p=np.random.uniform(0, self.p_max, size=self.nodes)
+ '''
+    def normalisasi_state(data_rate, EE, power, gain, *):
+        rate_max=np.max(data_rate) if np.max(data_rate) !=0 else 1
+        gain_max=np.max(gain) if np.max(gain) !=0 else 1
+        p_max=np.max(power) if np.max(power) !=0 else 1
+        normalized_data_rate = np.array(data_rate) / rate_max
+        normalized_EE = EE * 10  # supaya punya skala sebanding
+        normalized_power = power / p_max
+        normalized_gain = gain.flatten() / gain_max
+
+        state = np.concatenate((
+            normalized_data_rate,
+            [normalized_EE],
+            normalized_power,
+            normalized_gain
+        ))
+'''
+        return state
     def ini(self,ini_gain,*, seed: Optional[int] = None, options: Optional[dict] = None):
+        power = self.p
         #super().ini(seed=seed)
         #ini_gain= self.generate_channel_gain()
-        ini_sinr=self.hitung_sinr(ini_gain,self.p)
+        ini_sinr=self.hitung_sinr(ini_gain,power)
         ini_data_rate=self.hitung_data_rate(ini_sinr)
         ini_EE=self.hitung_efisiensi_energi(self.p,ini_data_rate)
-        result_array = np.concatenate((np.array(ini_data_rate), np.array([ini_EE])))
+        
+        result_array = np.concatenate((np.array(ini_data_rate), np.array([ini_EE]),np.array(power),ini_gain.flatten()))
         return result_array ,{}
         #tambahin channel gain, disamain kaya algoritma GNN
+'''
+    def ini(self, ini_gain, *, seed: Optional[int] = None, options: Optional[dict] = None):
+        ini_sinr = self.hitung_sinr(ini_gain, self.p)
+        ini_data_rate = self.hitung_data_rate(ini_sinr)
+        ini_EE = self.hitung_efisiensi_energi(self.p, ini_data_rate)
+
+        state = normalisasi_state(
+            ini_data_rate,
+            ini_EE,
+            self.p,
+            ini_gain,
+            p_max=self.p_max
+        )
+        return state, {}
+'''
     def generate_channel_gain(self):
         channel_gain = np.random.rayleigh(scale=1, size=(self.nodes, self.nodes))
         return channel_gain
@@ -46,14 +81,16 @@ class GameState:
         return energi_efisiensi
 
     def step(self,power,channel_gain):
-        self.last_power=power
+        #self.last_power=power
         #new_channel_gain=self.generate_channel_gain()
         new_sinr=self.hitung_sinr(channel_gain,power)
         new_data_rate=self.hitung_data_rate(new_sinr)
         EE=self.hitung_efisiensi_energi(power,new_data_rate)
         total_daya=np.sum(power)
-        result_array = np.concatenate((np.array(new_data_rate), np.array([EE])))
-        reward = 5*EE+np.sum(((np.array(new_data_rate)-self.gamma)*10).tolist())+ 5*(self.p_max-total_daya) 
+        result_array = np.concatenate((np.array(new_data_rate), np.array([EE]),np.array(power),channel_gain.flatten()))
+        fairness = np.var(new_data_rate)  # Variansi untuk mengukur kesenjangan data rate
+        reward = ( 5 * EE + np.sum(((np.array(new_data_rate)-self.gamma)*10)) - 3 * fairness - 2 * np.sum(power[power <= 0]) )
+        #reward = 5*EE+np.sum(((np.array(new_data_rate)-self.gamma)*10).tolist())+ 5*(self.p_max-total_daya) 
         for i in power :
             if i<=0:
                 reward-=8*i
