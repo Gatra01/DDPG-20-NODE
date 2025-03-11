@@ -16,7 +16,7 @@ class Actor(nn.Module):
     def forward(self, state):
         a = torch.relu(self.l1(state))
         a = torch.relu(self.l2(a))
-        a = torch.tanh(self.l3(a)) * self.maxaction
+        a = torch.sigmoid(self.l3(a)) * self.maxaction
         return a
 
 
