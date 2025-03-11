@@ -7,7 +7,7 @@ class GameState:
         self.gamma=0.01
         self.beta=1
         self.noise_power=0.01
-        self.observation_space=nodes+1
+        self.observation_space=2*nodes + nodes*nodes + 1
         self.action_space=nodes
         self.p=np.random.uniform(0, self.p_max, size=self.nodes)
  '''
