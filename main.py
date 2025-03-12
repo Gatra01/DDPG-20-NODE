@@ -100,6 +100,7 @@ def main():
                 done = (dw or tr)
 
                 agent.replay_buffer.add(np.array(s, dtype=np.float32), a, r, np.array(s_next, dtype=np.float32), dw)
+                #replay buffer harus ada nilai maximalnya. jadi nanti ketika replay buffer full baru mulai training
                 s = s_next
                 total_steps += 1
 
