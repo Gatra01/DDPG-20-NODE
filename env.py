@@ -60,6 +60,9 @@ class GameState:
         for i in power :
             if i <= 0 :
                 reward -=3
+        for i in new_data_rate :
+            if i <= 0.05 :
+                reward -=2
         #reward =np.sum(((np.array(new_data_rate)-self.gamma)*10).tolist())+ 5*(self.p_max-total_daya) 
         #for i in power :
         #    if i<=0:
