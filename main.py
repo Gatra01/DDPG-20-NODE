@@ -80,7 +80,7 @@ def main():
             print('EnvName:', BrifEnvName[opt.EnvIdex], 'score:', score, )
     else:
         total_steps = 0
-        while total_steps < opt.Max_train_steps:
+        while total_steps < opt.Max_train_steps: # ini loop episode. Jadi total episode adalah Max_train_steps/200
             channel_gain=env.generate_channel_gain()
             s,info= env.ini(channel_gain, seed=env_seed)  # Do not use opt.seed directly, or it can overfit to opt.seed
             env_seed += 1
