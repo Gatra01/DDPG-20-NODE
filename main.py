@@ -19,7 +19,7 @@ parser.add_argument('--Loadmodel', type=str2bool, default=False, help='Load pret
 parser.add_argument('--ModelIdex', type=int, default=100, help='which model to load')
 
 parser.add_argument('--seed', type=int, default=0, help='random seed')
-parser.add_argument('--Max_train_steps', type=int, default=500000, help='Max training steps') #aslinya 5e6
+parser.add_argument('--Max_train_steps', type=int, default=1000000, help='Max training steps') #aslinya 5e6
 parser.add_argument('--save_interval', type=int, default=10000, help='Model saving interval, in steps.') #aslinya 1e5
 parser.add_argument('--eval_interval', type=int, default=5000, help='Model evaluating interval, in steps.') #aslinya 2e3
 
@@ -29,7 +29,7 @@ parser.add_argument('--a_lr', type=float, default=1e-3, help='Learning rate of a
 parser.add_argument('--c_lr', type=float, default=1e-3, help='Learning rate of critic')
 parser.add_argument('--batch_size', type=int, default=128, help='batch_size of training')
 parser.add_argument('--random_steps', type=int, default=60000, help='random steps before trianing')
-parser.add_argument('--noise', type=float, default=0.5, help='exploring noise')
+parser.add_argument('--noise', type=float, default=0.3, help='exploring noise') #aslinya 0.1
 opt = parser.parse_args()
 opt.dvc = torch.device(opt.dvc) # from str to torch.device
 
@@ -85,18 +85,19 @@ def main():
             s,info= env.ini(channel_gain, seed=env_seed)  # Do not use opt.seed directly, or it can overfit to opt.seed
             env_seed += 1
             done = False
-            #print("ini aku di loop utama")
             langkah = 0
             '''Interact & trian'''
             while not done:  
-                #print(total_steps, opt.random_steps)
                 langkah +=1
-                if total_steps < opt.random_steps: a = env.p
+                if total_steps < opt.random_steps: 
+                    a = env.p
                 else: 
                     a = agent.select_action(s, deterministic=False)
                 s_next, r, dw, tr, info = env.step(a,channel_gain) # dw: dead&win; tr: truncated
-                if langkah == 150 :
+                if langkah == 250 :
                     tr= True
+                    dw = True #aslinya gak ada
+                    
                 done = (dw or tr)
 
                 agent.replay_buffer.add(np.array(s, dtype=np.float32), a, r, np.array(s_next, dtype=np.float32), dw)
