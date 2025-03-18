@@ -22,9 +22,9 @@ class GameState:
         #ini_sinr=self.hitung_sinr(ini_gain,intr,power)
         #ini_data_rate=self.hitung_data_rate(ini_sinr)
         #ini_EE=self.hitung_efisiensi_energi(self.p,ini_data_rate)
-        gain_norm=norm(gain)
-        intr_norm = norm(intr)
-        p_norm=norm(power)
+        gain_norm=self.norm(gain)
+        intr_norm = self.norm(intr)
+        p_norm=self.norm(power)
         
         result_array = np.concatenate((np.array(gain_norm).flatten(), np.array(intr_norm).flatten(),np.array(p_norm)))
         return result_array ,{}
@@ -35,9 +35,9 @@ class GameState:
         new_data_rate=self.hitung_data_rate(new_sinr)
         EE=self.hitung_efisiensi_energi(power,new_data_rate)
         total_daya=np.sum(power)
-        gain_norm=norm(channel_gain)
-        intr_norm = norm(new_intr)
-        p_norm=norm(power)
+        gain_norm=self.norm(channel_gain)
+        intr_norm = self.norm(new_intr)
+        p_norm=self.norm(power)
         result_array = np.concatenate((np.array(gain_norm).flatten(), np.array(intr_norm).flatten(),np.array(p_norm)))
         fairness = np.var(new_data_rate)  # Variansi untuk mengukur kesenjangan data rate
         reward = (self.p_max-total_daya) + EE
