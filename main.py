@@ -84,7 +84,7 @@ def main():
         while total_steps < opt.Max_train_steps: # ini loop episode. Jadi total episode adalah Max_train_steps/200
             loc= env.generate_positions()
             channel_gain=env.generate_channel_gain(loc)
-            s,info= env.ini(channel_gain, seed=env_seed)  # Do not use opt.seed directly, or it can overfit to opt.seed
+            s,info= env.reset(channel_gain, seed=env_seed)  # Do not use opt.seed directly, or it can overfit to opt.seed
             env_seed += 1
             done = False
             langkah = 0
