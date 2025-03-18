@@ -2,7 +2,7 @@ import numpy as np
 from typing import Optional
 
 class GameState:
-    def __init__(self, nodes, p_max, area_size=(100, 100)):
+    def __init__(self, nodes, p_max, area_size=(5, 5)):
         self.nodes = nodes
         self.p_max = p_max
         self.gamma = 0.01
@@ -10,7 +10,7 @@ class GameState:
         self.noise_power = 0.01
         self.area_size = area_size
         self.positions = self.generate_positions()
-        self.observation_space = 2 * nodes + nodes * nodes + 1  # data_rate, power, channel gain, EE
+        self.observation_space = 2 * nodes * nodes + nodes  # data_rate, power, channel gain, EE
         self.action_space = nodes
         self.p = np.random.uniform(0, self.p_max, size=self.nodes)
     def reset(self,*, seed: Optional[int] = None, options: Optional[dict] = None):
