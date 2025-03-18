@@ -112,7 +112,7 @@ def main():
 
                 '''record & log'''
                 if total_steps % opt.eval_interval == 0:
-                    state_eval,inf=eval_env.ini(channel_gain)
+                    state_eval,inf=eval_env.reset(channel_gain)
                     state_eval = np.array(state_eval, dtype=np.float32)
                     ep_r,avg_ee = evaluate_policy(channel_gain,state_eval,eval_env, agent, turns=3)
                     if opt.write: 
