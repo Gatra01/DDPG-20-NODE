@@ -105,6 +105,8 @@ class GameState:
         return np.log(1 + sinr)
 
     def hitung_efisiensi_energi(self, power, data_rate):
+        """Menghitung efisiensi energi total"""
         total_power = np.sum(power)
         total_rate = np.sum(data_rate)
-        return total_rate / total_power if total
+        energi_efisiensi=total_rate / total_power if total_power > 0 else 0
+        return energi_efisiensi
