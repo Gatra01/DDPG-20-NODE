@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from env import GameState
+from env2 import GameState
 from ddpg import *
 from collections import deque
 import torch.nn as nn
@@ -38,8 +38,8 @@ def main():
     #BrifEnvName = ['PV1', 'LLdV2', 'Humanv4', 'HCv4','BWv3', 'BWHv3']
     BrifEnvName = ['6G', 'LLdV2', 'Humanv4', 'HCv4','BWv3', 'BWHv3']
     # Build Env
-    env = GameState(5,3)
-    eval_env = GameState(5,3)
+    env = GameState(5,5)
+    eval_env = GameState(5,5)
     opt.state_dim = env.observation_space
     opt.action_dim = env.action_space
     opt.max_action = env.p_max   #remark: action space【-max,max】
@@ -72,8 +72,9 @@ def main():
     if opt.render:
         
         while True:
-            channel_gain=env.generate_channel_gain()
-            state_eval1,inf=env.ini(channel_gain)
+            loc = env.generate_positions()
+            channel_gain=env.generate_channel_gain(loc)
+            state_eval1,inf=env.reset(channel_gain)
             state_eval1 = np.array(state_eval1, dtype=np.float32)
             score = evaluate_policy(channel_gain,state_eval1,env, agent, turns=1)
             
@@ -81,7 +82,8 @@ def main():
     else:
         total_steps = 0
         while total_steps < opt.Max_train_steps: # ini loop episode. Jadi total episode adalah Max_train_steps/200
-            channel_gain=env.generate_channel_gain()
+            loc= env.generate_positions()
+            channel_gain=env.generate_channel_gain(loc)
             s,info= env.ini(channel_gain, seed=env_seed)  # Do not use opt.seed directly, or it can overfit to opt.seed
             env_seed += 1
             done = False
@@ -101,7 +103,6 @@ def main():
                 done = (dw or tr)
 
                 agent.replay_buffer.add(np.array(s, dtype=np.float32), a, r, np.array(s_next, dtype=np.float32), dw)
-                #replay buffer harus ada nilai maximalnya. jadi nanti ketika replay buffer full baru mulai training
                 s = s_next
                 total_steps += 1
 
