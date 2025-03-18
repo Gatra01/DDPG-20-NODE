@@ -13,11 +13,11 @@ class GameState:
         self.observation_space = 2 * nodes * nodes + nodes  # data_rate, power, channel gain, EE
         self.action_space = nodes
         self.p = np.random.uniform(0, self.p_max, size=self.nodes)
-    def reset(self,*, seed: Optional[int] = None, options: Optional[dict] = None):
+    def reset(self,gain,*, seed: Optional[int] = None, options: Optional[dict] = None):
         power = self.p
         #super().ini(seed=seed)
-        loc = self.generate_positions()
-        gain= self.generate_channel_gain(loc)
+        #loc = self.generate_positions()
+        #gain= self.generate_channel_gain(loc)
         intr=self.interferensi(power,gain)
         #ini_sinr=self.hitung_sinr(ini_gain,intr,power)
         #ini_data_rate=self.hitung_data_rate(ini_sinr)
