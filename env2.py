@@ -52,7 +52,7 @@ class GameState:
         #    if i<=0:
         #        reward-=8*i
 
-        return result_array,reward, False,False,{'power': total_daya,'rate': np.sum(new_data_rate),'EE': EE}
+        return result_array,reward, False,False,{}
 
     def norm(self,x):
         x_log = np.log10(x + 1e-10)  # +1e-10 untuk menghindari log(0)
