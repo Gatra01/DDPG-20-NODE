@@ -108,7 +108,9 @@ def main():
 
                 '''train'''
                 if total_steps >= opt.random_steps:
-                    agent.train()
+                    a_loss, c_loss = agent.train()
+                    writer.add_scalar("Loss/Actor", a_loss, total_steps)
+                    writer.add_scalar("Loss/Critic", c_loss, total_steps)
         
                 '''record & log'''
                 if total_steps % opt.eval_interval == 0:
@@ -117,10 +119,12 @@ def main():
                     ep_r = evaluate_policy(channel_gain,state_eval,eval_env, agent, turns=3)
                     if opt.write: 
                         writer.add_scalar('ep_r', ep_r, global_step=total_steps)
-                        writer.add_scalar("Loss/Actor", a_loss.item(), total_steps)
-                        writer.add_scalar("Loss/Critic", q_loss.item(), total_steps)
+                        #writer.add_scalar("Loss/Actor", a_loss.item(), total_steps)
+                        #writer.add_scalar("Loss/Critic", q_loss.item(), total_steps)
                         #writer.add_scalar('avg_ee', avg_ee, global_step=total_steps)
                     print(f'EnvName:{BrifEnvName[opt.EnvIdex]}, Steps: {int(total_steps/1000)}k, Episode Reward:{ep_r}')
+                    print(f'EnvName:{BrifEnvName[opt.EnvIdex]}, Steps: {int(total_steps/1000)}k, actor_loss:{a_loss}')
+                    print(f'EnvName:{BrifEnvName[opt.EnvIdex]}, Steps: {int(total_steps/1000)}k, c_loss:{c_loss}')
 
                 '''save model'''
                 if total_steps % opt.save_interval == 0:
