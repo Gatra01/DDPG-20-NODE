@@ -100,7 +100,7 @@ def main():
                 channel_gain=env.generate_channel_gain(loc)
                 if langkah == 250 :
                     tr= True
-                    dw = True #aslinya gak ada
+                   
                     
                 done = (dw or tr)
 
