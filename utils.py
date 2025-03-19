@@ -61,7 +61,7 @@ def evaluate_policy(channel_gain,state, env, agent, turns = 3):
 
             total_scores += r
             s = s_next
-        print(f'reward per episode: {t=total_scores}')
+        print(f'reward per episode:{total_scores}')
         print(f'contoh action: {a}')
        
     return int(total_scores/turns)
