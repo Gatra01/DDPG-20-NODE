@@ -62,7 +62,7 @@ class DDPG_agent():
 		a_loss.backward()
 
 			# Gradient clipping for actor
-		nn_utils.clip_grad_norm_(self.actor.parameters(), max_norm=1.0)
+		clip_grad_norm_(self.actor.parameters(), max_norm=1.0)
 
 		self.actor_optimizer.step()
 
