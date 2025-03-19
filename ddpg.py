@@ -65,7 +65,7 @@ class DDPG_agent():
 
 			for param, target_param in zip(self.actor.parameters(), self.actor_target.parameters()):
 				target_param.data.copy_(self.tau * param.data + (1 - self.tau) * target_param.data)
-		return a_loss.item(), c_loss.item()
+		return a_loss.item(), q_loss.item()
 
 	def save(self,EnvName, timestep):
 		torch.save(self.actor.state_dict(), "./model/{}_actor{}.pth".format(EnvName,timestep))
