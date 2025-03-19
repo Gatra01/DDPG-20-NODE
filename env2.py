@@ -10,7 +10,7 @@ class GameState:
         self.noise_power = 0.01
         self.area_size = area_size
         self.positions = self.generate_positions()
-        self.observation_space = 2 * nodes * nodes + nodes  # data_rate, power, channel gain, EE
+        self.observation_space = nodes * nodes + 2*nodes  # data_rate, power, channel gain, EE
         self.action_space = nodes
         self.p = np.random.uniform(0, self.p_max, size=self.nodes)
     def reset(self,gain,*, seed: Optional[int] = None, options: Optional[dict] = None):
@@ -19,14 +19,15 @@ class GameState:
         #loc = self.generate_positions()
         #gain= self.generate_channel_gain(loc)
         intr=self.interferensi(power,gain)
+        new_intr=self.interferensi_state(intr)
         #ini_sinr=self.hitung_sinr(ini_gain,intr,power)
         #ini_data_rate=self.hitung_data_rate(ini_sinr)
         #ini_EE=self.hitung_efisiensi_energi(self.p,ini_data_rate)
         gain_norm=self.norm(gain)
-        intr_norm = self.norm(intr)
+        intr_norm = self.norm(new_intr)
         p_norm=self.norm(power)
         
-        result_array = np.concatenate((np.array(gain_norm).flatten(), np.array(intr_norm).flatten(),np.array(p_norm)))
+        result_array = np.concatenate((np.array(gain_norm).flatten(), np.array(intr_norm),np.array(p_norm)))
         return result_array ,{}
 
     def step_function(self,x):
@@ -40,14 +41,15 @@ class GameState:
         new_sinr=self.hitung_sinr(channel_gain,new_intr,power)
         new_data_rate=self.hitung_data_rate(new_sinr)
         data_rate_constraint=[]
+        intr_state=self.interferensi_state(new_intr)
         for i in range(self.nodes):
             data_rate_constraint.append(self.step_function(0.05-new_data_rate[i]))
         EE=self.hitung_efisiensi_energi(power,new_data_rate)
         total_daya=np.sum(power)
         gain_norm=self.norm(channel_gain)
-        intr_norm = self.norm(new_intr)
+        intr_norm = self.norm(intr_state)
         p_norm=self.norm(power)
-        result_array = np.concatenate((np.array(gain_norm).flatten(), np.array(intr_norm).flatten(),np.array(p_norm)))
+        result_array = np.concatenate((np.array(gain_norm).flatten(), np.array(intr_norm),np.array(p_norm)))
         fairness = np.var(new_data_rate)  # Variansi untuk mengukur kesenjangan data rate
         reward = EE - 10e6 * self.step_function(total_daya-self.p_max)-10e6*np.sum(data_rate_constraint)
         return result_array,reward, False,False,{}
@@ -89,7 +91,13 @@ class GameState:
                     interferensi[i][j] = 0
         return interferensi
     
-
+    def interferensi_state(self, interferensi):
+        interferensi_state = np.zeros(self.nodes)
+        for i in range(self.nodes):
+            for j in range(self.nodes):
+                interferensi_state[i]+=interferensi[j][i]
+        return interferensi_state
+        
     def hitung_sinr(self, channel_gain, interferensi, power):
         sinr = np.zeros(self.nodes)
         for node_idx in range(self.nodes):
