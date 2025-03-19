@@ -26,9 +26,9 @@ parser.add_argument('--eval_interval', type=int, default=2000, help='Model evalu
 parser.add_argument('--gamma', type=float, default=0.99, help='Discounted Factor')
 parser.add_argument('--net_width', type=int, default=400, help='Hidden net width, s_dim-400-300-a_dim')
 parser.add_argument('--a_lr', type=float, default=1e-3, help='Learning rate of actor')
-parser.add_argument('--c_lr', type=float, default=1e-3, help='Learning rate of critic')
+parser.add_argument('--c_lr', type=float, default=8e-4, help='Learning rate of critic')
 parser.add_argument('--batch_size', type=int, default=128, help='batch_size of training')
-parser.add_argument('--random_steps', type=int, default=50000, help='random steps before trianing')
+parser.add_argument('--random_steps', type=int, default=40000, help='random steps before trianing')
 parser.add_argument('--noise', type=float, default=0.1, help='exploring noise') #aslinya 0.1
 opt = parser.parse_args()
 opt.dvc = torch.device(opt.dvc) # from str to torch.device
