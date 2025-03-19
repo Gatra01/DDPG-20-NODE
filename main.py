@@ -96,6 +96,8 @@ def main():
                 else: 
                     a = agent.select_action(s, deterministic=False)
                 s_next, r, dw, tr, info = env.step(a,channel_gain) # dw: dead&win; tr: truncated
+                loc= env.generate_positions()
+                channel_gain=env.generate_channel_gain(loc)
                 if langkah == 250 :
                     tr= True
                     dw = True #aslinya gak ada
