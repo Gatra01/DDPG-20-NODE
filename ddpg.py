@@ -3,7 +3,7 @@ import torch.nn.functional as F
 import numpy as np
 import torch
 import copy
-
+from torch.nn.utils import clip_grad_norm_
 
 class DDPG_agent():
 	def __init__(self, **kwargs):
@@ -44,18 +44,26 @@ class DDPG_agent():
 		# Get current Q estimates
 		current_Q = self.q_critic(s, a)
 
-		# Compute critic loss
+			# Compute critic loss
 		q_loss = F.mse_loss(current_Q, target_Q)
 
-		# Optimize the q_critic
+			# Optimize the q_critic
 		self.q_critic_optimizer.zero_grad()
 		q_loss.backward()
+
+			# Gradient clipping for critic
+		clip_grad_norm_(self.q_critic.parameters(), max_norm=1.0)
+
 		self.q_critic_optimizer.step()
 
-		# Update the Actor
-		a_loss = -self.q_critic(s,self.actor(s)).mean()
+			# Update the Actor
+		a_loss = -self.q_critic(s, self.actor(s)).mean()
 		self.actor_optimizer.zero_grad()
 		a_loss.backward()
+
+			# Gradient clipping for actor
+		nn_utils.clip_grad_norm_(self.actor.parameters(), max_norm=1.0)
+
 		self.actor_optimizer.step()
 
 		# Update the frozen target models
