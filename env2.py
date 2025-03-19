@@ -29,10 +29,19 @@ class GameState:
         result_array = np.concatenate((np.array(gain_norm).flatten(), np.array(intr_norm).flatten(),np.array(p_norm)))
         return result_array ,{}
 
+    def step_function(self,x):
+        if x<=0 :
+            x= 0
+        else :
+            x=1
+        return x
     def step(self,power,channel_gain):
         new_intr=self.interferensi(power,channel_gain)
         new_sinr=self.hitung_sinr(channel_gain,new_intr,power)
         new_data_rate=self.hitung_data_rate(new_sinr)
+        data_rate_constraint=[]
+        for i in range(self.nodes):
+            data_rate_constraint.append(self.step_function(0.05-new_data_rate[i]))
         EE=self.hitung_efisiensi_energi(power,new_data_rate)
         total_daya=np.sum(power)
         gain_norm=self.norm(channel_gain)
@@ -40,18 +49,7 @@ class GameState:
         p_norm=self.norm(power)
         result_array = np.concatenate((np.array(gain_norm).flatten(), np.array(intr_norm).flatten(),np.array(p_norm)))
         fairness = np.var(new_data_rate)  # Variansi untuk mengukur kesenjangan data rate
-        reward = (self.p_max-total_daya) + EE
-        for i in power :
-            if i <= 0 :
-                reward -= 0.5
-        for i in new_data_rate :
-            if i <= 0.05 :
-                reward -= 0.5
-        #reward =np.sum(((np.array(new_data_rate)-self.gamma)*10).tolist())+ 5*(self.p_max-total_daya) 
-        #for i in power :
-        #    if i<=0:
-        #        reward-=8*i
-
+        reward = EE - 10e6 * self.step_function(total_daya-self.p_max)-10e6*np.sum(data_rate_constraint)
         return result_array,reward, False,False,{}
 
     def norm(self,x):
