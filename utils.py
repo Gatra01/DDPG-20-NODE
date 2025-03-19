@@ -2,6 +2,7 @@ import torch.nn.functional as F
 import torch.nn as nn
 import argparse
 import torch
+import numpy as np
 
 class Actor(nn.Module):
     def __init__(self, state_dim, action_dim, net_width, maxaction):
