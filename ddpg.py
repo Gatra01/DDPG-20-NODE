@@ -9,7 +9,7 @@ class DDPG_agent():
 	def __init__(self, **kwargs):
 		# Init hyperparameters for agent, just like "self.gamma = opt.gamma, self.lambd = opt.lambd, ..."
 		self.__dict__.update(kwargs)
-		self.tau = 0.005
+		self.tau = 0.001
 
 		self.actor = Actor(self.state_dim, self.action_dim, self.net_width, self.max_action).to(self.dvc)
 		self.actor_optimizer = torch.optim.Adam(self.actor.parameters(), lr=self.a_lr)
