@@ -135,6 +135,8 @@ def main():
                 '''save model'''
                 if total_steps % opt.save_interval == 0:
                     agent.save(BrifEnvName[opt.EnvIdex], int(total_steps/1000))
+                s = s_next
+                channel_gain=next_channel_gain
         print("The end")
 
 
