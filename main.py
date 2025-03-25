@@ -95,7 +95,9 @@ def main():
                     a = env.p
                 else: 
                     a = agent.select_action(s, deterministic=False)
-                s_next, r, dw, tr, info = env.step(a,channel_gain) # dw: dead&win; tr: truncated
+                next_loc= env.generate_positions() #lokasi untuk s_t
+                next_channel_gain=env.generate_channel_gain(next_loc) #channel gain untuk s_t
+                s_next, r, dw, tr, info = env.step(a,channel_gain,next_channel_gain) # dw: dead&win; tr: truncated
                 loc= env.generate_positions()
                 channel_gain=env.generate_channel_gain(loc)
                 if langkah == 100 :
@@ -106,6 +108,7 @@ def main():
 
                 agent.replay_buffer.add(np.array(s, dtype=np.float32), a, r, np.array(s_next, dtype=np.float32), dw)
                 s = s_next
+                channel_gain=next_channel_gain
                 total_steps += 1
 
                 '''train'''
