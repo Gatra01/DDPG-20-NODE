@@ -27,7 +27,7 @@ class GameState:
         intr_norm = self.norm(intr)
         p_norm=self.norm(power)
         
-        result_array = np.concatenate((np.array(gain_norm).flatten(), np.array(intr_norm),np.array(p_norm)))
+        result_array = np.concatenate((np.array(gain_norm).flatten(), np.array(intr_norm).flatten(),np.array(p_norm)))
         return result_array ,{}
 
     def step_function(self,x):
@@ -50,7 +50,7 @@ class GameState:
         gain_norm=self.norm(next_channel_gain)
         intr_norm = self.norm(next_intr)
         p_norm=self.norm(power)
-        result_array = np.concatenate((np.array(gain_norm).flatten(), np.array(intr_norm),np.array(p_norm)))
+        result_array = np.concatenate((np.array(gain_norm).flatten(), np.array(intr_norm).flatten(),np.array(p_norm)))
         fairness = np.var(new_data_rate)  # Variansi untuk mengukur kesenjangan data rate
         reward = EE -  self.step_function(total_daya-self.p_max)-np.sum(data_rate_constraint)
         return result_array,reward, False,False,{}
