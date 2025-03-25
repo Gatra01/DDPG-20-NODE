@@ -100,7 +100,7 @@ def main():
                 s_next, r, dw, tr, info = env.step(a,channel_gain,next_channel_gain) # dw: dead&win; tr: truncated
                 loc= env.generate_positions()
                 channel_gain=env.generate_channel_gain(loc)
-                if langkah == 100 :
+                if langkah == 150 :
                     tr= True
                    
                     
