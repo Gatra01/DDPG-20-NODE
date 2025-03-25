@@ -36,18 +36,19 @@ class GameState:
         else :
             x=1
         return x
-    def step(self,power,channel_gain):
-        new_intr=self.interferensi(power,channel_gain)
-        new_sinr=self.hitung_sinr(channel_gain,new_intr,power)
-        new_data_rate=self.hitung_data_rate(new_sinr)
+    def step(self,power,channel_gain,next_channel_gain):
+        intr=self.interferensi(power,channel_gain)
+        next_intr=self.interferensi(power,next_channel_gain)
+        sinr=self.hitung_sinr(channel_gain,intr,power)
+        data_rate=self.hitung_data_rate(sinr)
         data_rate_constraint=[]
-        intr_state=self.interferensi_state(new_intr)
+        #intr_state=self.interferensi_state(new_intr)
         for i in range(self.nodes):
-            data_rate_constraint.append(self.step_function(0.05-new_data_rate[i]))
-        EE=self.hitung_efisiensi_energi(power,new_data_rate)
+            data_rate_constraint.append(self.step_function(0.05-data_rate[i]))
+        EE=self.hitung_efisiensi_energi(power,data_rate)
         total_daya=np.sum(power)
-        gain_norm=self.norm(channel_gain)
-        intr_norm = self.norm(new_intr)
+        gain_norm=self.norm(next_channel_gain)
+        intr_norm = self.norm(next_intr)
         p_norm=self.norm(power)
         result_array = np.concatenate((np.array(gain_norm).flatten(), np.array(intr_norm),np.array(p_norm)))
         fairness = np.var(new_data_rate)  # Variansi untuk mengukur kesenjangan data rate
