@@ -3,6 +3,7 @@ import torch.nn as nn
 import argparse
 import torch
 import numpy as np
+from env2 import GameState
 
 class Actor(nn.Module):
     def __init__(self, state_dim, action_dim, net_width, maxaction):
@@ -36,7 +37,8 @@ class Q_Critic(nn.Module):
         q = self.l3(q)
         return q
 
-def evaluate_policy(channel_gain,state, env, agent, turns = 3):
+def evaluate_policy(channel_gain,next_channel_gain,state, env, agent, turns = 3):
+    env = GameState(5,3)   
     total_scores = 0
     total_data_rate = 0
     total_power = 0
@@ -45,7 +47,7 @@ def evaluate_policy(channel_gain,state, env, agent, turns = 3):
     for j in range(turns):
         #s, info = env.ini()
         done = False
-        MAX_STEPS = 250  # Batas maksimum langkah per episode
+        MAX_STEPS = 150  # Batas maksimum langkah per episode
         step_count = 0
         a=np.zeros(5)
         while not done:
@@ -54,7 +56,9 @@ def evaluate_policy(channel_gain,state, env, agent, turns = 3):
             a = agent.select_action(state, deterministic=True) #aslinya True
             #if render :
             #print(a)
-            s_next, r, dw, tr, info = env.step(a,channel_gain)
+            next_loc= env.generate_positions() #lokasi untuk s_t
+            next_channel_gain=env.generate_channel_gain(next_loc) #channel gain untuk s_t
+            s_next, r, dw, tr, info = env.step(a,channel_gain,next_channel_gain)
             
             if step_count==MAX_STEPS:
                 tr=True
@@ -62,6 +66,7 @@ def evaluate_policy(channel_gain,state, env, agent, turns = 3):
 
             total_scores += r
             s = s_next
+            channel_gain=next_channel_gain
         print(f'reward per episode:{total_scores}')
         print(f'contoh action: {a}')
        
