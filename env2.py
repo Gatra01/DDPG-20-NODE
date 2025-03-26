@@ -44,7 +44,7 @@ class GameState:
         data_rate_constraint=[]
         #intr_state=self.interferensi_state(new_intr)
         for i in range(self.nodes):
-            data_rate_constraint.append(self.step_function(10e6*(0.05-data_rate[i])))
+            data_rate_constraint.append(self.step_function(10e6*(0.263-data_rate[i])))
         EE=self.hitung_efisiensi_energi(power,data_rate)
         total_daya=np.sum(power)
         gain_norm=self.norm(next_channel_gain)
