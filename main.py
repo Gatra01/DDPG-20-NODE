@@ -157,7 +157,8 @@ def main():
                 channel_gain=next_channel_gain
         print("The end")
 
-
+#%load_ext tensorboard
+#%tensorboard --logdir runs
 if __name__ == '__main__':
     main()
 
