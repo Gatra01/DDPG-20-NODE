@@ -105,7 +105,7 @@ def main():
                 langkah +=1
                 lr_steps+=1
                 if total_steps <= opt.random_steps: #aslinya < aja, ide pengubahan ini tuh supaya selec action di train dulu.
-                    a = env.p
+                    a = env.sample_valid_power
                 else: 
                     a = agent.select_action(s, deterministic=False)
                 writer.add_scalar("Power node 1", a[0], total_steps)
