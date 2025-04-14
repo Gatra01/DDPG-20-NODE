@@ -115,7 +115,8 @@ def main():
                 writer.add_scalar("Power node 5", a[4], total_steps)
                 next_loc= env.generate_positions() #lokasi untuk s_t
                 next_channel_gain=env.generate_channel_gain(next_loc) #channel gain untuk s_t
-                s_next, r, dw, tr, info = env.step(a,channel_gain,next_channel_gain) # dw: dead&win; tr: truncated
+                s_next, r, dw, tr, info,EE = env.step(a,channel_gain,next_channel_gain) # dw: dead&win; tr: truncated
+                writer.add_scalar("Energi Efisiensi", EE, total_steps)
                 loc= env.generate_positions()
                 channel_gain=env.generate_channel_gain(loc)
                 if langkah == iterasi :
