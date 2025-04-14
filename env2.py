@@ -58,7 +58,7 @@ class GameState:
         result_array = np.concatenate((np.array(gain_norm).flatten(), np.array(intr_norm).flatten(),np.array(p_norm)))
         #fairness = np.var(new_data_rate)  # Variansi untuk mengukur kesenjangan data rate
         reward = EE -  150*self.step_function(total_daya-self.p_max)-np.sum(data_rate_constraint)
-        return result_array,reward, False,False,{}
+        return result_array,reward, False,False,{},EE
 
     def norm(self,x):
         x_log = np.log10(x + 1e-10)  # +1e-10 untuk menghindari log(0)
