@@ -58,7 +58,7 @@ def evaluate_policy(channel_gain,state, env, agent, turns = 3):
             #print(a)
             next_loc= env.generate_positions() #lokasi untuk s_t
             next_channel_gain=env.generate_channel_gain(next_loc) #channel gain untuk s_t
-            s_next, r, dw, tr, info = env.step(a,channel_gain,next_channel_gain)
+            s_next, r, dw, tr, info,EE = env.step(a,channel_gain,next_channel_gain)
             
             if step_count==MAX_STEPS:
                 tr=True
