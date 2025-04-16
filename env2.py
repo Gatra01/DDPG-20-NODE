@@ -19,7 +19,7 @@ class GameState:
         return rand * self.p_max
 
     def reset(self,gain,*, seed: Optional[int] = None, options: Optional[dict] = None):
-        power = sample_valid_power()
+        power = self.sample_valid_power()
         #super().ini(seed=seed)
         #loc = self.generate_positions()
         #gain= self.generate_channel_gain(loc)
