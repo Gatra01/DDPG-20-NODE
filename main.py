@@ -116,9 +116,14 @@ def main():
                 writer.add_scalar("Total power", a[0]+a[1]+a[2]+a[3]+a[4], total_steps)
                 next_loc= env.generate_positions() #lokasi untuk s_t
                 next_channel_gain=env.generate_channel_gain(next_loc) #channel gain untuk s_t
-                s_next, r, dw, tr, info,EE = env.step(a,channel_gain,next_channel_gain) # dw: dead&win; tr: truncated
+                s_next, r, dw, tr, info,EE,rate= env.step(a,channel_gain,next_channel_gain) # dw: dead&win; tr: truncated
                 writer.add_scalar("Energi Efisiensi", EE, total_steps)
                 writer.add_scalar("Reward iterasi", r, total_steps)
+                writer.add_scalar("data rate 1", rate[0], total_steps)
+                writer.add_scalar("data rate 2", rate[1], total_steps)
+                writer.add_scalar("data rate 3", rate[2], total_steps)
+                writer.add_scalar("data rate 4", rate[3], total_steps)
+                writer.add_scalar("data rate 5", rate[4], total_steps)
                 loc= env.generate_positions()
                 channel_gain=env.generate_channel_gain(loc)
                 if langkah == iterasi :
