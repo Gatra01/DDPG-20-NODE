@@ -118,6 +118,7 @@ def main():
                 next_channel_gain=env.generate_channel_gain(next_loc) #channel gain untuk s_t
                 s_next, r, dw, tr, info,EE = env.step(a,channel_gain,next_channel_gain) # dw: dead&win; tr: truncated
                 writer.add_scalar("Energi Efisiensi", EE, total_steps)
+                writer.add_scalar("Reward iterasi", r, total_steps)
                 loc= env.generate_positions()
                 channel_gain=env.generate_channel_gain(loc)
                 if langkah == iterasi :
