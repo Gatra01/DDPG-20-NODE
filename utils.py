@@ -49,10 +49,10 @@ def evaluate_policy(channel_gain,state, env, agent, turns = 3):
         done = False
         MAX_STEPS = 200  # Batas maksimum langkah per episode
         step_count = 0
-        #a=np.zeros(5)
+        a=np.zeros(5)
         while not done:
             step_count += 1
-            #print(state1)
+            
             # Take deterministic actions at test time
             a = agent.select_action(state, deterministic=True) #aslinya True
             #if render :
