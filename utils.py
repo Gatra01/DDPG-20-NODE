@@ -55,8 +55,8 @@ def evaluate_policy(channel_gain,state, env, agent, turns = 3):
             
             # Take deterministic actions at test time
             a = agent.select_action(state, deterministic=True) #aslinya True
-            #if render :
-            print(a)
+            if step_count== 1 or step_count==200:
+                print(a)
             
             next_loc= env.generate_positions() #lokasi untuk s_t
             next_channel_gain=env.generate_channel_gain(next_loc) #channel gain untuk s_t
