@@ -55,7 +55,7 @@ def evaluate_policy(channel_gain,state, env, agent, turns = 3):
             
             # Take deterministic actions at test time
             a = agent.select_action(state, deterministic=True) #aslinya True
-            if step_count== 1 or step_count==200:
+            if step_count== 1 or step_count==2:
                 print(a)
             
             next_loc= env.generate_positions() #lokasi untuk s_t
@@ -69,9 +69,6 @@ def evaluate_policy(channel_gain,state, env, agent, turns = 3):
             total_scores += r
             state = s_next
             channel_gain=next_channel_gain
-        print(f'reward per episode:{total_scores}')
-        print(f'contoh action: {a}')
-       
     return int(total_scores/turns)
 
 #Just ignore this function~
