@@ -47,7 +47,7 @@ def evaluate_policy(channel_gain,state, env, agent, turns = 3):
     for j in range(turns):
         #s, info = env.ini()
         done = False
-        MAX_STEPS = 3  # Batas maksimum langkah per episode
+        MAX_STEPS = 1  # Batas maksimum langkah per episode
         step_count = 0
         a=np.zeros(5)
         while not done:
@@ -55,8 +55,8 @@ def evaluate_policy(channel_gain,state, env, agent, turns = 3):
             
             # Take deterministic actions at test time
             a = agent.select_action(state, deterministic=True) #aslinya True
-            if step_count== 1 or step_count==2:
-                print(a)
+            
+            print(a)
             
             next_loc= env.generate_positions() #lokasi untuk s_t
             next_channel_gain=env.generate_channel_gain(next_loc) #channel gain untuk s_t
