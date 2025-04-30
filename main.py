@@ -128,7 +128,7 @@ def main():
                 channel_gain=env.generate_channel_gain(loc)
                 if langkah == iterasi :
                     tr= True
-                    print(f'P1 : {a[0]}, P2 : {a[1]}, P3 : {a[2]}, P4 : {a[3]}, P5 : a[4]')
+                    print(f'P1 : {a[0]}, P2 : {a[1]}, P3 : {a[2]}, P4 : {a[3]}, P5 : {a[4]}')
                     print(f'R1 : {rate[0]}, R2 : {rate[1]}, R3 : {rate[2]}, R4 : {rate[3]}, R5 : {rate[4]}')
                     print(f'reward : {r}')
                     
