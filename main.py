@@ -19,16 +19,16 @@ parser.add_argument('--Loadmodel', type=str2bool, default=False, help='Load pret
 parser.add_argument('--ModelIdex', type=int, default=100, help='which model to load')
 
 parser.add_argument('--seed', type=int, default=0, help='random seed')
-parser.add_argument('--Max_train_steps', type=int, default = 15000, help='Max training steps') #aslinya 5e6
-parser.add_argument('--save_interval', type=int, default=2500, help='Model saving interval, in steps.') #aslinya 1e5
-parser.add_argument('--eval_interval', type=int, default=500, help='Model evaluating interval, in steps.') #aslinya 2e3
+parser.add_argument('--Max_train_steps', type=int, default = 1500, help='Max training steps') #aslinya 5e6
+parser.add_argument('--save_interval', type=int, default=250, help='Model saving interval, in steps.') #aslinya 1e5
+parser.add_argument('--eval_interval', type=int, default=100, help='Model evaluating interval, in steps.') #aslinya 2e3
 
 parser.add_argument('--gamma', type=float, default=0.99, help='Discounted Factor')
 parser.add_argument('--net_width', type=int, default=400, help='Hidden net width, s_dim-400-300-a_dim')
 parser.add_argument('--a_lr', type=float, default=2e-3, help='Learning rate of actor')
 parser.add_argument('--c_lr', type=float, default=1e-3, help='Learning rate of critic')
-parser.add_argument('--batch_size', type=int, default=128, help='batch_size of training')
-parser.add_argument('--random_steps', type=int, default=5000, help='random steps before trianing')
+parser.add_argument('--batch_size', type=int, default=64, help='batch_size of training')
+parser.add_argument('--random_steps', type=int, default=100, help='random steps before trianing')
 parser.add_argument('--noise', type=float, default=0.1, help='exploring noise') #aslinya 0.1
 opt = parser.parse_args()
 opt.dvc = torch.device(opt.dvc) # from str to torch.device
@@ -128,7 +128,9 @@ def main():
                 channel_gain=env.generate_channel_gain(loc)
                 if langkah == iterasi :
                     tr= True
-                   
+                    print(f'P1 : {a[0]}, P2 : {a[1]}, P3 : {a[2]}, P4 : {a[3]}, P5 : a[4]')
+                    print(f'R1 : {rate[0]}, R2 : {rate[1]}, R3 : {rate[2]}, R4 : {rate[3]}, R5 : {rate[4]}')
+                    print(f'reward : {r}')
                     
                 done = (dw or tr)
 
