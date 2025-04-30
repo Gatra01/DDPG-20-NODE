@@ -31,7 +31,8 @@ class DDPG_agent():
 				return a
 			else:
 				noise = np.random.normal(0, self.max_action * self.noise, size=self.action_dim)
-				return (a + noise).clip(0, self.max_action)
+				#return (a + noise).clip(0, self.max_action) ini di komen karena katanya udah di batesin di softmax
+				return np.clip(a + noise, 0, self.max_action)
 
 	def train(self):
 		# Compute the target Q
