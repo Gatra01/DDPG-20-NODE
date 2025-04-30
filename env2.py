@@ -71,7 +71,7 @@ class GameState:
         #penalty_rate = 150 * np.sum((data_rate < min_rate).astype(float))
         #reward = EE - penalty_power - penalty_rate
         reward = EE -  150*self.step_function(total_daya-self.p_max)-np.sum(data_rate_constraint)
-        obs = np.concatenate([self.norm(next_channel_gain).ravel(),self.norm(next_intr).ravel(),self.norm(power])
+        obs = np.concatenate([self.norm(next_channel_gain).ravel(),self.norm(next_intr).ravel(),self.norm(power)])
         return obs.astype(np.float32), float(reward), dw,False,{},EE,data_rate
 
     def norm(self,x):
