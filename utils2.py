@@ -12,8 +12,11 @@ class Actor(nn.Module):
         self.l1 = nn.Linear(state_dim, 400)
         self.l2 = nn.Linear(400, 300)
         self.l3 = nn.Linear(300, action_dim)
+        
 
         self.maxaction = maxaction
+        nn.init.zeros_(self.l3.weight)
+        self.l3.bias.data.fill_(0.0)
 
     def forward(self, state):
         a = torch.relu(self.l1(state))
