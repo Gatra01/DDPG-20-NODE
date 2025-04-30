@@ -74,8 +74,8 @@ def main():
     # Build DRL model
     if not os.path.exists('model'): os.mkdir('model')
     agent = DDPG_agent(**vars(opt)) # var: transfer argparse to dictionary
-    dummy_s = torch.zeros((1, opt.state_dim), device=opt.dvc)
-    print("Initial actor a:", agent.actor(dummy_s).cpu().detach().numpy())
+    #dummy_s = torch.zeros((1, opt.state_dim), device=opt.dvc)
+    #print("Initial actor a:", agent.actor(dummy_s).cpu().detach().numpy())
     if opt.Loadmodel: agent.load(BrifEnvName[opt.EnvIdex], opt.ModelIdex)
 
     if opt.render:
