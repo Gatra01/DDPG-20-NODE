@@ -67,6 +67,8 @@ def evaluate_policy(channel_gain,state, env, agent, turns = 3):
             done = (dw or tr)
 
             total_scores += r
+            total_EE     += info['EE']
+            total_power  += info['total_power']
             state = s_next
             channel_gain=next_channel_gain
     return int(total_scores/turns)
