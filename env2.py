@@ -12,7 +12,7 @@ class GameState:
         self.positions = self.generate_positions()
         self.observation_space = 2*nodes * nodes + nodes  # interferensi, channel gain, power
         self.action_space = nodes
-        self.p = np.random.uniform(0, 6, size=self.nodes)
+        self.p = np.random.uniform(0, 3, size=self.nodes)
     def sample_valid_power(self):
         rand = np.random.rand(self.nodes)
         rand /= np.sum(rand)
@@ -51,14 +51,28 @@ class GameState:
         for i in range(self.nodes):
             data_rate_constraint.append(150*self.step_function(0.51-data_rate[i]))
         EE=self.hitung_efisiensi_energi(power,data_rate)
+        
         total_daya=np.sum(power)
-        gain_norm=self.norm(next_channel_gain)
-        intr_norm = self.norm(next_intr)
-        p_norm=self.norm(power)
-        result_array = np.concatenate((np.array(gain_norm).flatten(), np.array(intr_norm).flatten(),np.array(p_norm)))
-        #fairness = np.var(new_data_rate)  # Variansi untuk mengukur kesenjangan data rate
+        
+        # Condition 1: Budget exceeded
+        fail_power = total_power > self.p_max
+
+        # Condition 2: Any data rate below threshold
+        min_rate = 0.51
+        fail_rate = np.any(data_rate < min_rate)
+
+        # Final done flag for “dead/win”
+        dw = bool(fail_power or fail_rate)
+        #gain_norm=self.norm(next_channel_gain)
+        #intr_norm = self.norm(next_intr)
+        #p_norm=self.norm(power)
+        #result_array = np.concatenate((np.array(gain_norm).flatten(), np.array(intr_norm).flatten(),np.array(p_norm)))
+        #penalty_power = 150 * float(fail_power)
+        #penalty_rate = 150 * np.sum((data_rate < min_rate).astype(float))
+        #reward = EE - penalty_power - penalty_rate
         reward = EE -  150*self.step_function(total_daya-self.p_max)-np.sum(data_rate_constraint)
-        return result_array,reward, False,False,{},EE,data_rate
+        obs = np.concatenate([self.norm(next_channel_gain).ravel(),self.norm(next_intr).ravel(),self.norm(power])
+        return obs.astype(np.float32), float(reward), dw,False,{},EE,data_rate
 
     def norm(self,x):
         x = np.maximum(x, 1e-10) # aslinya kagak ada
