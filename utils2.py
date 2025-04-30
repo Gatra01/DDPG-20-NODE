@@ -21,11 +21,21 @@ class Actor(nn.Module):
     def forward(self, state):
         a = torch.relu(self.l1(state))
         a = torch.relu(self.l2(a))
-        logits = self.l3(a)                                 # no tanh
-        probs  = torch.softmax(logits, dim=-1)              # sum=1, each >0
-        return probs * self.maxaction                        # ini namanya metode soft-max head
+        #logits = self.l3(a)                                 # no tanh
+        #probs  = torch.softmax(logits, dim=-1)              # sum=1, each >0
+        #return probs * self.maxaction                        # ini namanya metode soft-max head
         #a = torch.sigmoid(self.l3(x)) * self.maxaction      # kalo yang ini namanya sigmoid head    
-        #return a                                              
+        #return a
+        raw = torch.sigmoid(self.l3(a)) * self.maxaction   # ∈[0,max] per dim
+        # projection onto simplex {a: ∑a = p_max, a>=0}
+        u, _ = torch.sort(raw, descending=True, dim=-1)
+        cssv = torch.cumsum(u, dim=-1) - self.maxaction
+        ind  = torch.arange(1, raw.size(-1)+1, device=raw.device)
+        cond = u - cssv / ind > 0
+        rho  = cond.sum(dim=-1, keepdim=True)
+        theta= cssv.gather(-1, rho-1) / rho
+        proj = torch.clamp(raw - theta, min=0.0)
+        return proj
 
 
 class Q_Critic(nn.Module):
