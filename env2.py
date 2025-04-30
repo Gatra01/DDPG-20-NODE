@@ -47,7 +47,6 @@ class GameState:
         sinr=self.hitung_sinr(channel_gain,intr,power)
         data_rate=self.hitung_data_rate(sinr)
         data_rate_constraint=[]
-        #intr_state=self.interferensi_state(new_intr)
         for i in range(self.nodes):
             data_rate_constraint.append(150*self.step_function(0.5-data_rate[i]))
         EE=self.hitung_efisiensi_energi(power,data_rate)
@@ -63,17 +62,16 @@ class GameState:
 
         # Final done flag for “dead/win”
         dw = bool(fail_power)
-        #gain_norm=self.norm(next_channel_gain)
-        #intr_norm = self.norm(next_intr)
-        #p_norm=self.norm(power)
-        #result_array = np.concatenate((np.array(gain_norm).flatten(), np.array(intr_norm).flatten(),np.array(p_norm)))
-        #penalty_power = 150 * float(fail_power)
-        #penalty_rate = 150 * np.sum((data_rate < min_rate).astype(float))
-        #reward = EE - penalty_power - penalty_rate
+
+        info = {
+        'EE': EE,
+        'data_rate': data_rate,
+        'total_power': float(np.sum(power))
+        }
+
         reward = EE -  150*self.step_function(total_daya-self.p_max)-np.sum(data_rate_constraint)
         obs = np.concatenate([self.norm(next_channel_gain).ravel(),self.norm(next_intr).ravel(),self.norm(power)])
-        return obs.astype(np.float32), float(reward), dw,False,{},EE,data_rate
-
+        return obs.astype(np.float32), float(reward), dw,False,{}
     def norm(self,x):
         x = np.maximum(x, 1e-10) # aslinya kagak ada
         x_log = np.log10(x + 1e-10)  # +1e-10 untuk menghindari log(0)
