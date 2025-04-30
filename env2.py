@@ -65,7 +65,11 @@ class GameState:
 
         info = {
         'EE': EE,
-        'data_rate': data_rate,
+        'data_rate1': data_rate[0],
+        'data_rate2': data_rate[1],
+        'data_rate3': data_rate[2],
+        'data_rate4': data_rate[3],
+        'data_rate5': data_rate[4],
         'total_power': float(np.sum(power))
         }
 
