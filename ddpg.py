@@ -38,8 +38,10 @@ class DDPG_agent():
 		with torch.no_grad():
 			s, a, r, s_next, dw = self.replay_buffer.sample(self.batch_size)
 			target_a_next = self.actor_target(s_next)
+			mask = (~dw).float().unsqueeze(1)
 			target_Q= self.q_critic_target(s_next, target_a_next)
-			target_Q = r + self.gamma * target_Q  #dw: die or win
+			target_Q = r + self.gamma * mask * target_Q #ini ditambahin dw biar bagus kata gpt
+			#target_Q = r + self.gamma * target_Q  #dw: die or win
 
 		# Get current Q estimates
 		current_Q = self.q_critic(s, a)
