@@ -58,7 +58,7 @@ class GameState:
         fail_power = total_daya > self.p_max
 
         # Condition 2: Any data rate below threshold
-        min_rate = 0.51
+        min_rate = 0.1
         fail_rate = np.any(data_rate < min_rate)
 
         # Final done flag for “dead/win”
