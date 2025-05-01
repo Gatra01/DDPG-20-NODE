@@ -7,28 +7,36 @@ from env2 import GameState
 
 class Actor(nn.Module):
     def __init__(self, state_dim, action_dim, net_width, maxaction):
-        super(Actor, self).__init__()
-
-        self.l1 = nn.Linear(state_dim, net_width)
-        self.l2 = nn.Linear(net_width, 512)
-        self.l3 = nn.Linear(512,256)
-        self.l4 = nn.Linear(256, action_dim)
-        
+        super().__init__()
+        # shared trunk
+        self.net = nn.Sequential(
+            nn.Linear(state_dim, net_width),
+            nn.ReLU(),
+            nn.LayerNorm(net_width),
+            nn.Linear(net_width, net_width//2),
+            nn.ReLU(),
+            nn.LayerNorm(net_width//2),
+            nn.Linear(net_width//2, net_width//4),
+            nn.ReLU(),
+            nn.LayerNorm(net_width//4),
+        )
+        # two heads
+        self.dist_head  = nn.Linear(net_width//4, action_dim)  # for softmax
+        self.scale_head = nn.Linear(net_width//4, 1)           # for budget
 
         self.maxaction = maxaction
-        nn.init.zeros_(self.l4.weight)
-        self.l4.bias.data.fill_(0.0)
 
     def forward(self, state):
-        a = torch.relu(self.l1(state))
-        a = torch.relu(self.l2(a))
-        a = torch.relu(self.l3(a))
-        logits = self.l4(a)                                 # no tanh
-        probs  = torch.softmax(logits, dim=-1)              # sum=1, each >0
-        return probs * self.maxaction                        # ini namanya metode soft-max head
-        #a = torch.sigmoid(self.l3(x)) * self.maxaction      # kalo yang ini namanya sigmoid head    
-        #return a
-      
+        x = self.net(state)                   # [B, hidden]
+        logits = self.dist_head(x)            # [B, action_dim]
+        dist   = F.softmax(logits, dim=-1)    # sum to 1
+
+        scale  = torch.sigmoid(self.scale_head(x)).squeeze(-1)  
+        # scale in (0,1), shape [B]
+
+        total_power = scale * self.maxaction  # shape [B]
+        # expand total_power to [B,action_dim] so we can multiply
+        return dist * total_power.unsqueeze(-1)
 
 
 class Q_Critic(nn.Module):
