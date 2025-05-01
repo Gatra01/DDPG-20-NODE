@@ -2,7 +2,7 @@ import numpy as np
 from typing import Optional
 
 class GameState:
-    def __init__(self, nodes, p_max, area_size=(5, 5)):
+    def __init__(self, nodes, p_max, area_size=(20, 20)):
         self.nodes = nodes
         self.p_max = p_max
         self.gamma = 0.01
@@ -12,7 +12,7 @@ class GameState:
         self.positions = self.generate_positions()
         self.observation_space = 2*nodes * nodes + nodes  # interferensi, channel gain, power
         self.action_space = nodes
-        self.p = np.random.uniform(0, 3, size=self.nodes)
+        self.p = np.random.uniform(0, 1, size=self.nodes)
     def sample_valid_power(self):
         rand = np.random.rand(self.nodes)
         rand /= np.sum(rand)
@@ -48,7 +48,7 @@ class GameState:
         data_rate=self.hitung_data_rate(sinr)
         data_rate_constraint=[]
         for i in range(self.nodes):
-            data_rate_constraint.append(150*self.step_function(0.5-data_rate[i]))
+            data_rate_constraint.append(150*self.step_function(0.0145-data_rate[i]))
         EE=self.hitung_efisiensi_energi(power,data_rate)
         
         total_daya=np.sum(power)
