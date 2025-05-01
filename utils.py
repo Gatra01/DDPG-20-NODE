@@ -9,8 +9,8 @@ class Actor(nn.Module):
     def __init__(self, state_dim, action_dim, net_width, maxaction):
         super(Actor, self).__init__()
 
-        self.l1 = nn.Linear(state_dim, 400)
-        self.l2 = nn.Linear(400, 300)
+        self.l1 = nn.Linear(state_dim, net_width)
+        self.l2 = nn.Linear(net_width, 300)
         self.l3 = nn.Linear(300, action_dim)
 
         self.maxaction = maxaction
@@ -26,8 +26,8 @@ class Q_Critic(nn.Module):
     def __init__(self, state_dim, action_dim, net_width):
         super(Q_Critic, self).__init__()
 
-        self.l1 = nn.Linear(state_dim + action_dim, 400)
-        self.l2 = nn.Linear(400, 300)
+        self.l1 = nn.Linear(state_dim + action_dim, net_width)
+        self.l2 = nn.Linear(net_width, 300)
         self.l3 = nn.Linear(300, 1)
 
     def forward(self, state, action):
