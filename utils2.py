@@ -10,18 +10,20 @@ class Actor(nn.Module):
         super(Actor, self).__init__()
 
         self.l1 = nn.Linear(state_dim, net_width)
-        self.l2 = nn.Linear(net_width, 300)
-        self.l3 = nn.Linear(300, action_dim)
+        self.l2 = nn.Linear(net_width, 512)
+        self.l3 = nn.Linear(512,256)
+        self.l4 = nn.Linear(256, action_dim)
         
 
         self.maxaction = maxaction
-        nn.init.zeros_(self.l3.weight)
-        self.l3.bias.data.fill_(0.0)
+        nn.init.zeros_(self.l4.weight)
+        self.l4.bias.data.fill_(0.0)
 
     def forward(self, state):
         a = torch.relu(self.l1(state))
         a = torch.relu(self.l2(a))
-        logits = self.l3(a)                                 # no tanh
+        a = torch.relu(self.l3(a))
+        logits = self.l4(a)                                 # no tanh
         probs  = torch.softmax(logits, dim=-1)              # sum=1, each >0
         return probs * self.maxaction                        # ini namanya metode soft-max head
         #a = torch.sigmoid(self.l3(x)) * self.maxaction      # kalo yang ini namanya sigmoid head    
@@ -30,18 +32,32 @@ class Actor(nn.Module):
 
 
 class Q_Critic(nn.Module):
-    def __init__(self, state_dim, action_dim, net_width):
-        super(Q_Critic, self).__init__()
+    def __init__(self, state_dim, action_dim, net_width=1024):
+        super().__init__()
+        # pertama‐tama embed state saja
+        self.l1 = nn.Linear(state_dim, net_width)
+        self.ln1 = nn.LayerNorm(net_width)
 
-        self.l1 = nn.Linear(state_dim + action_dim, net_width)
-        self.l2 = nn.Linear(net_width, 300)
-        self.l3 = nn.Linear(300, 1)
+        # setelah itu concat action, lalu dua layer lagi
+        self.l2 = nn.Linear(net_width + action_dim, net_width//2)
+        self.ln2 = nn.LayerNorm(net_width//2)
+
+        self.l3 = nn.Linear(net_width//2, net_width//4)
+        self.ln3 = nn.LayerNorm(net_width//4)
+
+        # output Q‐value scalar
+        self.l4 = nn.Linear(net_width//4, 1)
 
     def forward(self, state, action):
-        sa = torch.cat([state, action], 1)
-        q = F.relu(self.l1(sa))
-        q = F.relu(self.l2(q))
-        q = self.l3(q)
+        """
+        state:  Tensor [B, state_dim]
+        action: Tensor [B, action_dim]
+        """
+        x = F.relu(self.ln1(self.l1(state)))             # [B, net_width]
+        x = torch.cat([x, action], dim=-1)               # [B, net_width+action_dim]
+        x = F.relu(self.ln2(self.l2(x)))                 # [B, net_width//2]
+        x = F.relu(self.ln3(self.l3(x)))                 # [B, net_width//4]
+        q = self.l4(x)                                   # [B, 1]
         return q
 
 def evaluate_policy(channel_gain,state, env, agent, turns = 3):
