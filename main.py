@@ -24,7 +24,7 @@ parser.add_argument('--save_interval', type=int, default=2500, help='Model savin
 parser.add_argument('--eval_interval', type=int, default=1000, help='Model evaluating interval, in steps.') #aslinya 2e3
 
 parser.add_argument('--gamma', type=float, default=0.99, help='Discounted Factor')
-parser.add_argument('--net_width', type=int, default=400, help='Hidden net width, s_dim-400-300-a_dim')
+parser.add_argument('--net_width', type=int, default=1024, help='Hidden net width, s_dim-400-300-a_dim')
 parser.add_argument('--a_lr', type=float, default=2e-3, help='Learning rate of actor') # 2e-3
 parser.add_argument('--c_lr', type=float, default=1e-3, help='Learning rate of critic') # 1e-3
 parser.add_argument('--batch_size', type=int, default=128, help='batch_size of training')
