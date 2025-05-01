@@ -66,13 +66,18 @@ def evaluate_policy(channel_gain,state, env, agent, turns = 3):
     total_data_rate = 0
     total_power = 0
     total_EE=0
+    dr1=0
+    dr2=0
+    dr3=0
+    dr4=0
+    dr5=0
    
     for j in range(turns):
         #s, info = env.ini()
         done = False
         MAX_STEPS = 1  # Batas maksimum langkah per episode
         step_count = 0
-        a=np.zeros(20)
+        a=np.zeros(5)
         while not done:
             step_count += 1
             
@@ -88,11 +93,19 @@ def evaluate_policy(channel_gain,state, env, agent, turns = 3):
             if step_count==MAX_STEPS:
                 tr=True
             done = (dw or tr)
-
+            dr1 +=info['data_rate1']
+            dr2 +=info['data_rate2']
+            dr3 +=info['data_rate3']
+            dr4 +=info['data_rate4']
+            dr5 +=info['data_rate5']
             total_scores += r
+            total_EE     += info['EE']
+            total_power  += info['total_power']
+            
             state = s_next
             channel_gain=next_channel_gain
-    return int(total_scores/turns)
+    return int(total_scores/turns), total_EE/turns,total_power/turns,dr1/turns,dr2/turns,dr3/turns,dr4/turns,dr5/turns
+
 
 #Just ignore this function~
 def str2bool(v):
