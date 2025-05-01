@@ -48,7 +48,7 @@ class GameState:
         data_rate=self.hitung_data_rate(sinr)
         data_rate_constraint=[]
         for i in range(self.nodes):
-            data_rate_constraint.append(150*self.step_function(0.0145-data_rate[i]))
+            data_rate_constraint.append(5*self.step_function(0.0145-data_rate[i]))
         EE=self.hitung_efisiensi_energi(power,data_rate)
         
         total_daya=np.sum(power)
@@ -57,8 +57,8 @@ class GameState:
         fail_power = total_daya > self.p_max
 
         # Condition 2: Any data rate below threshold
-        min_rate = 0.5
-        fail_rate = np.any(data_rate < min_rate)
+        #min_rate = 0.5
+        #fail_rate = np.any(data_rate < min_rate)
 
         # Final done flag for “dead/win”
         dw = bool(fail_power)
@@ -73,7 +73,7 @@ class GameState:
         'total_power': float(np.sum(power))
         }
 
-        reward = EE -  150*self.step_function(total_daya-self.p_max)-np.sum(data_rate_constraint)
+        reward = EE -  5*self.step_function(total_daya-self.p_max)-np.sum(data_rate_constraint)
         obs = np.concatenate([self.norm(next_channel_gain).ravel(),self.norm(next_intr).ravel(),self.norm(power)])
         return obs.astype(np.float32), float(reward), dw,False, info
     def norm(self,x):
