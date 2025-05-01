@@ -76,6 +76,9 @@ def main():
     agent = DDPG_agent(**vars(opt)) # var: transfer argparse to dictionary
     #dummy_s = torch.zeros((1, opt.state_dim), device=opt.dvc)
     #print("Initial actor a:", agent.actor(dummy_s).cpu().detach().numpy())
+    print("state_dim, action_dim =", opt.state_dim, opt.action_dim)
+    #dummy = torch.zeros(1, opt.state_dim).to(opt.dvc)
+    #print("actor out shape:", agent.actor(dummy).shape)
     if opt.Loadmodel: agent.load(BrifEnvName[opt.EnvIdex], opt.ModelIdex)
 
     if opt.render:
