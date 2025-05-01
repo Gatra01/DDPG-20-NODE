@@ -38,7 +38,7 @@ class Q_Critic(nn.Module):
         return q
 
 def evaluate_policy(channel_gain,state, env, agent, turns = 3):
-    env = GameState(7,1)   
+    env = GameState(20,5)   
     total_scores = 0
     total_data_rate = 0
     total_power = 0
