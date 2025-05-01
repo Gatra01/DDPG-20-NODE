@@ -125,7 +125,7 @@ class GameState:
         sinr = np.zeros(self.nodes)
         for node_idx in range(self.nodes):
             sinr_numerator = (abs(channel_gain[node_idx][node_idx])) * power[node_idx]
-            sinr_denominator = self.noise_power**2 + np.sum([(abs(interferensi[node_idx][i])) for i in range(self.nodes) if i != node_idx])
+            sinr_denominator = self.noise_power + np.sum([(abs(interferensi[node_idx][i])) for i in range(self.nodes) if i != node_idx]) #aslinya noise_power**2
             sinr[node_idx] = sinr_numerator / sinr_denominator
         return sinr 
 
