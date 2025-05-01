@@ -48,7 +48,7 @@ class GameState:
         data_rate=self.hitung_data_rate(sinr)
         data_rate_constraint=[]
         for i in range(self.nodes):
-            data_rate_constraint.append(150*self.step_function(0.4-data_rate[i]))
+            data_rate_constraint.append(150*self.step_function(0.222-data_rate[i]))
         EE=self.hitung_efisiensi_energi(power,data_rate)
         
         total_daya=np.sum(power)
