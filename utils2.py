@@ -71,8 +71,11 @@ class Q_Critic(nn.Module):
 def evaluate_policy(channel_gain, state, env, agent, turns=3):
     env = GameState(20,5)
     total_scores = 0
+    total_scores_rand = 0 
     total_EE = 0
+    total_EE_rand=0
     total_power = 0
+    total_power_rand=0
 
     # threshold constraint (contoh)
     R_th = 0.074        # minimal data rate per UE [bit/s atau satuan yg kamu pakai]
@@ -80,7 +83,9 @@ def evaluate_policy(channel_gain, state, env, agent, turns=3):
 
     # Counters untuk constraint
     count_data_ok  = 0
+    count_data_ok_rand=0
     count_power_ok = 0
+    count_power_ok_rand=0
     total_steps    = 0
 
     for _ in range(turns):
@@ -95,12 +100,18 @@ def evaluate_policy(channel_gain, state, env, agent, turns=3):
             # aksi deterministik
             a = agent.select_action(state, deterministic=True)
 
+            #random_allocation 
+            a_rand=env.sample_valid_power()
+
             # generate next state
             next_loc         = env.generate_positions()
             next_channel_gain= env.generate_channel_gain(next_loc)
             s_next, r, dw, tr, info = env.step(a, channel_gain, next_channel_gain)
 
-            # cek constraint data rate: pastikan semua UE ≥ R_th
+            #step dari random 
+            s_next1, r1, dw1, tr1, info1 = env.step(a_rand, channel_gain, next_channel_gain)
+
+            # cek constraint data rate: pastikan semua UE ≥ R_th untuk ddpg
             data_rates = [
                 info['data_rate1'],
                 info['data_rate2'],
@@ -126,14 +137,47 @@ def evaluate_policy(channel_gain, state, env, agent, turns=3):
             if all(dr >= R_th for dr in data_rates):
                 count_data_ok += 1
 
+            #cek data rate untuk random 
+            data_rates1 = [
+                info1['data_rate1'],
+                info1['data_rate2'],
+                info1['data_rate3'],
+                info1['data_rate4'],
+                info1['data_rate5'],
+                info1['data_rate6'],
+                info1['data_rate7'],
+                info1['data_rate8'],
+                info1['data_rate9'],
+                info1['data_rate10'],
+                info1['data_rate11'],
+                info1['data_rate12'],
+                info1['data_rate13'],
+                info1['data_rate14'],
+                info1['data_rate15'],
+                info1['data_rate16'],
+                info1['data_rate17'],
+                info1['data_rate18'],
+                info1['data_rate19'],
+                info1['data_rate20'],
+            ]
+            if all(dr >= R_th for dr in data_rates1):
+                count_data_ok_rand += 1
+
+
             # cek constraint power: total_power ≤ P_th
             if info['total_power'] <= P_th:
                 count_power_ok += 1
+            # cek constraint power: total_power ≤ P_th untuk random
+            if info1['total_power'] <= P_th:
+                count_power_ok_rand += 1
 
             # akumulasi reward & metrik lain
             total_scores += r
+            total_scores_rand+=r1
             total_EE     += info['EE']
+            total_EE_rand +=info1['EE']
             total_power  += info['total_power']
+            total_power_rand +=info1['total_power']
 
             # update loop
             if step_count == MAX_STEPS:
@@ -144,18 +188,26 @@ def evaluate_policy(channel_gain, state, env, agent, turns=3):
 
     # hitung rata-rata metrik
     avg_score = total_scores / turns
+    avg_score_rand = total_scores_rand / turns
     avg_EE    = total_EE / turns
+    avg_EE_rand = total_EE_rand / turns 
     avg_power = total_power / turns
+    avg_power_rand = total_power_rand / turns
 
     # hitung persentase constraint terpenuhi
     pct_data_ok  = 100 * count_data_ok  / total_steps
     pct_power_ok = 100 * count_power_ok / total_steps
-
+    pct_data_ok_rand  = 100 * count_data_ok_rand  / total_steps
+    pct_power_ok_rand = 100 * count_power_ok_rand / total_steps
     return {
         'avg_score':    avg_score,
+        'avg_score_rand' : avg_score_rand,
         'avg_EE':       avg_EE,
+        'avg_EE_rand':       avg_EE_rand,
         'avg_power':    avg_power,
         'pct_data_ok':  pct_data_ok,
+        'pct_data_ok_rand':  pct_data_ok_rand,
+        'pct_power_ok_rand':  pct_power_ok_rand,
         'pct_power_ok': pct_power_ok
     }
 
