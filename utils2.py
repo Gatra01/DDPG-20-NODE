@@ -68,51 +68,97 @@ class Q_Critic(nn.Module):
         q = self.l4(x)                                   # [B, 1]
         return q
 
-def evaluate_policy(channel_gain,state, env, agent, turns = 3):
-    env = GameState(20,5)   
+def evaluate_policy(channel_gain, state, env, agent, turns=3):
+    env = GameState(20,5)
     total_scores = 0
-    total_data_rate = 0
+    total_EE = 0
     total_power = 0
-    total_EE=0
-    dr1=0
-    dr2=0
-    dr3=0
-    dr4=0
-    dr5=0
-   
-    for j in range(turns):
-        #s, info = env.ini()
+
+    # threshold constraint (contoh)
+    R_th = 0.074        # minimal data rate per UE [bit/s atau satuan yg kamu pakai]
+    P_th = 5      # maksimal total power [W atau satuan yg kamu pakai]
+
+    # Counters untuk constraint
+    count_data_ok  = 0
+    count_power_ok = 0
+    total_steps    = 0
+
+    for _ in range(turns):
         done = False
-        MAX_STEPS = 1  # Batas maksimum langkah per episode
+        MAX_STEPS = 1
         step_count = 0
-        a=np.zeros(5)
+
         while not done:
             step_count += 1
-            
-            # Take deterministic actions at test time
-            a = agent.select_action(state, deterministic=True) #aslinya True
-            
-            print(a)
-            
-            next_loc= env.generate_positions() #lokasi untuk s_t
-            next_channel_gain=env.generate_channel_gain(next_loc) #channel gain untuk s_t
-            s_next, r, dw, tr, info = env.step(a,channel_gain,next_channel_gain)
-            
-            if step_count==MAX_STEPS:
-                tr=True
-            done = (dw or tr)
-            dr1 +=info['data_rate1']
-            dr2 +=info['data_rate2']
-            dr3 +=info['data_rate3']
-            dr4 +=info['data_rate4']
-            dr5 +=info['data_rate5']
+            total_steps += 1
+
+            # aksi deterministik
+            a = agent.select_action(state, deterministic=True)
+
+            # generate next state
+            next_loc         = env.generate_positions()
+            next_channel_gain= env.generate_channel_gain(next_loc)
+            s_next, r, dw, tr, info = env.step(a, channel_gain, next_channel_gain)
+
+            # cek constraint data rate: pastikan semua UE ≥ R_th
+            data_rates = [
+                info['data_rate1'],
+                info['data_rate2'],
+                info['data_rate3'],
+                info['data_rate4'],
+                info['data_rate5'],
+                info['data_rate6'],
+                info['data_rate7'],
+                info['data_rate8'],
+                info['data_rate9'],
+                info['data_rate10'],
+                info['data_rate11'],
+                info['data_rate12'],
+                info['data_rate13'],
+                info['data_rate14'],
+                info['data_rate15'],
+                info['data_rate16'],
+                info['data_rate17'],
+                info['data_rate18'],
+                info['data_rate19'],
+                info['data_rate20'],
+            ]
+            if all(dr >= R_th for dr in data_rates):
+                count_data_ok += 1
+
+            # cek constraint power: total_power ≤ P_th
+            if info['total_power'] <= P_th:
+                count_power_ok += 1
+
+            # akumulasi reward & metrik lain
             total_scores += r
             total_EE     += info['EE']
             total_power  += info['total_power']
-            
+
+            # update loop
+            if step_count == MAX_STEPS:
+                tr = True
+            done = (dw or tr)
             state = s_next
-            channel_gain=next_channel_gain
-    return int(total_scores/turns), total_EE/turns,total_power/turns,dr1/turns,dr2/turns,dr3/turns,dr4/turns,dr5/turns
+            channel_gain = next_channel_gain
+
+    # hitung rata-rata metrik
+    avg_score = total_scores / turns
+    avg_EE    = total_EE / turns
+    avg_power = total_power / turns
+
+    # hitung persentase constraint terpenuhi
+    pct_data_ok  = 100 * count_data_ok  / total_steps
+    pct_power_ok = 100 * count_power_ok / total_steps
+
+    return {
+        'avg_score':    avg_score,
+        'avg_EE':       avg_EE,
+        'avg_power':    avg_power,
+        'pct_data_ok':  pct_data_ok,
+        'pct_power_ok': pct_power_ok
+    }
+
 
 
 #Just ignore this function~
