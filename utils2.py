@@ -99,9 +99,11 @@ def evaluate_policy(channel_gain, state, env, agent, turns=3):
 
             # aksi deterministik
             a = agent.select_action(state, deterministic=True)
+            
 
             #random_allocation 
             a_rand=env.sample_valid_power()
+            
 
             # generate next state
             next_loc         = env.generate_positions()
@@ -110,6 +112,8 @@ def evaluate_policy(channel_gain, state, env, agent, turns=3):
 
             #step dari random 
             s_next1, r1, dw1, tr1, info1 = env.step(a_rand, channel_gain, next_channel_gain)
+            print(f'DDPG power : {a}, reward :{r}')
+            print(f'random power : {a_rand}, reward :{r1}')
 
             # cek constraint data rate: pastikan semua UE ≥ R_th untuk ddpg
             data_rates = [
