@@ -90,7 +90,7 @@ def main():
             state_eval1 = np.array(state_eval1, dtype=np.float32)
             result = evaluate_policy(channel_gain,state_eval,eval_env, agent, turns=3)
             
-            print('EnvName:', BrifEnvName[opt.EnvIdex], 'score:', score, )
+            #print('EnvName:', BrifEnvName[opt.EnvIdex], 'score:', score, )
     else:
         total_steps = 0
         lr_steps = 0
@@ -154,7 +154,7 @@ def main():
                         writer.add_scalar('constraint data rate', result['pct_data_ok'], global_step=total_steps)
                         writer.add_scalar('constraint daya random', result['pct_power_ok_rand'], global_step=total_steps)
                         writer.add_scalar('constraint data rate random', result['pct_data_ok_rand'], global_step=total_steps)
-                    print(f'EnvName:{BrifEnvName[opt.EnvIdex]}, Steps: {int(total_steps/1000)}k, Episode Reward:{ep_r}')
+                    #print(f'EnvName:{BrifEnvName[opt.EnvIdex]}, Steps: {int(total_steps/1000)}k, Episode Reward:{ep_r}')
 
 
                 '''save model'''
