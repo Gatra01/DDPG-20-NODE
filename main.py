@@ -88,7 +88,7 @@ def main():
             channel_gain=env.generate_channel_gain(loc)
             state_eval1,inf=env.reset(channel_gain)
             state_eval1 = np.array(state_eval1, dtype=np.float32)
-            ep_r, ee, p,dr1,dr2,dr3,dr4,dr5 = evaluate_policy(channel_gain,state_eval,eval_env, agent, turns=3)
+            result = evaluate_policy(channel_gain,state_eval,eval_env, agent, turns=3)
             
             print('EnvName:', BrifEnvName[opt.EnvIdex], 'score:', score, )
     else:
@@ -144,16 +144,16 @@ def main():
                 if total_steps % opt.eval_interval == 0:
                     state_eval,inf=eval_env.reset(channel_gain)
                     state_eval = np.array(state_eval, dtype=np.float32)
-                    ep_r, ee, p,dr1,dr2,dr3,dr4,dr5 = evaluate_policy(channel_gain,state_eval,eval_env, agent, turns=3)
+                    result = evaluate_policy(channel_gain,state_eval,eval_env, agent, turns=3)
                     if opt.write: 
-                        writer.add_scalar('ep_r', ep_r, global_step=total_steps)
-                        writer.add_scalar('energi efisiensi', ee, global_step=total_steps)
-                        writer.add_scalar('total daya', p, global_step=total_steps)
-                        writer.add_scalar('dr1', dr1, global_step=total_steps)
-                        writer.add_scalar('dr2', dr2, global_step=total_steps)
-                        writer.add_scalar('dr3', dr3, global_step=total_steps)
-                        writer.add_scalar('dr4', dr4, global_step=total_steps)
-                        writer.add_scalar('dr5', dr5, global_step=total_steps)
+                        writer.add_scalar('ep_r', result['avg_score'], global_step=total_steps)
+                        writer.add_scalar('energi efisiensi', result['avg_EE'], global_step=total_steps)
+                        writer.add_scalar('energi efisiensi random', result['avg_EE_rand'], global_step=total_steps)
+                        writer.add_scalar('total daya', result['avg_power'], global_step=total_steps)
+                        writer.add_scalar('constraint daya', result['pct_power_ok'], global_step=total_steps)
+                        writer.add_scalar('constraint data rate', result['pct_data_ok'], global_step=total_steps)
+                        writer.add_scalar('constraint daya random', result['pct_power_ok_rand'], global_step=total_steps)
+                        writer.add_scalar('constraint data rate random', result['pct_data_ok_rand'], global_step=total_steps)
                     print(f'EnvName:{BrifEnvName[opt.EnvIdex]}, Steps: {int(total_steps/1000)}k, Episode Reward:{ep_r}')
 
 
