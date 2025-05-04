@@ -70,6 +70,21 @@ class GameState:
         'data_rate3': data_rate[2],
         'data_rate4': data_rate[3],
         'data_rate5': data_rate[4],
+        'data_rate6': data_rate[5],
+        'data_rate7': data_rate[6],
+        'data_rate8': data_rate[7],
+        'data_rate9': data_rate[8],
+        'data_rate10': data_rate[9],
+        'data_rate11': data_rate[10],
+        'data_rate12': data_rate[11],
+        'data_rate13': data_rate[12],
+        'data_rate14': data_rate[13],
+        'data_rate15': data_rate[14],
+        'data_rate16': data_rate[15],
+        'data_rate17': data_rate[16],
+        'data_rate18': data_rate[17],
+        'data_rate19': data_rate[18],
+        'data_rate20': data_rate[19],
         'total_power': float(np.sum(power))
         }
 
