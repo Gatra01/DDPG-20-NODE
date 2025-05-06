@@ -169,10 +169,10 @@ def evaluate_policy(channel_gain, state, env, agent, turns=3):
 
 
             # cek constraint power: total_power ≤ P_th
-            if a <= P_th:
+            if np.sum(a) <= P_th:
                 count_power_ok += 1
             # cek constraint power: total_power ≤ P_th untuk random
-            if a_rand <= P_th:
+            if np.sum(a_rand) <= P_th:
                 count_power_ok_rand += 1
 
             # akumulasi reward & metrik lain
