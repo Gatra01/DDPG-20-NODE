@@ -95,6 +95,7 @@ def main():
         total_steps = 0
         lr_steps = 0
         while total_steps < opt.Max_train_steps: # ini loop episode. Jadi total episode adalah Max_train_steps/200
+            lr_steps+=1
             if lr_steps==sepertiga_eps :
                 opt.a_lr=0.3 * opt.a_lr
                 opt.c_lr=0.3 * opt.c_lr
@@ -108,7 +109,6 @@ def main():
             '''Interact & trian'''
             while not done:  
                 langkah +=1
-                lr_steps+=1
                 if total_steps <= opt.random_steps: #aslinya < aja, ide pengubahan ini tuh supaya selec action di train dulu.
                     a = env.sample_valid_power()
                     #a = env.p
