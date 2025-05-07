@@ -154,6 +154,12 @@ def main():
                         writer.add_scalar('constraint data rate', result['pct_data_ok'], global_step=total_steps)
                         writer.add_scalar('constraint daya random', result['pct_power_ok_rand'], global_step=total_steps)
                         writer.add_scalar('constraint data rate random', result['pct_data_ok_rand'], global_step=total_steps)
+                        writer.add_scalar('data_rate_1', result['data_rate_1'], global_step=total_steps)
+                        writer.add_scalar('data_rate_7', result['data_rate_7'], global_step=total_steps)
+                        writer.add_scalar('data_rate_8', result['data_rate_8'], global_step=total_steps)
+                        writer.add_scalar('data_rate_11', result['data_rate_11'], global_step=total_steps)
+                        writer.add_scalar('data_rate_15', result['data_rate_15'], global_step=total_steps)
+                        writer.add_scalar('data_rate_20', result['data_rate_20'], global_step=total_steps)
                     print(f'EnvName:{BrifEnvName[opt.EnvIdex]}, Steps: {int(total_steps/1000)}k')
 
 
