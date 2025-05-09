@@ -107,6 +107,10 @@ def evaluate_policy(channel_gain, state, env, agent, turns=1):
     count_power_ok_rand=0
     total_steps    = 0
 
+    #counter data rate 
+    count = 0 
+    count_rand=0
+
     for _ in range(turns):
         done = False
         MAX_STEPS = 1
@@ -209,6 +213,12 @@ def evaluate_policy(channel_gain, state, env, agent, turns=1):
             if all(dr >= R_th for dr in data_rates1):
                 count_data_ok_rand += 1
 
+            for i in range(env.nodes):
+                if data_rates[i] >= R_th :
+                    count+=1
+                if data_rates1[i] >= R_th :
+                    count_rand +=1
+
 
             # cek constraint power: total_power ≤ P_th
             if np.sum(a) <= P_th:
@@ -274,7 +284,9 @@ def evaluate_policy(channel_gain, state, env, agent, turns=1):
         'data_rate_17': dr17,
         'data_rate_18': dr18,
         'data_rate_19': dr19,
-        'data_rate_20': dr20
+        'data_rate_20': dr20,
+        'data_rate_pass' : count, 
+        'data_rate_rand_pass' : count_rand
         
         
     }
