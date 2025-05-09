@@ -118,8 +118,8 @@ def evaluate_policy(channel_gain, state, env, agent, turns=1):
             for i in range(env.nodes):
                 dr = info[f'data_rate{i+1}']
                 data_rates_per_node[i].append(dr)
-                dr1 = info1[f'data_rate{i+1}']
-                data_rates_rand_per_node[i].append(dr1)
+                #dr1 = info1[f'data_rate{i+1}']
+                #data_rates_rand_per_node[i].append(dr1)
             
             
 
