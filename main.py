@@ -161,7 +161,7 @@ def main():
                         #writer.add_scalar('data_rate_15', result['data_rate_15'], global_step=total_steps)
                         #writer.add_scalar('data_rate_20', result['data_rate_20'], global_step=total_steps)
                         for i, dr in enumerate(result['data_rates_per_node']):
-                            writer.add_scalar(f'data_rate/node_{i+1}', dr, global_step=step)
+                            writer.add_scalar(f'data_rate/node_{i+1}', dr, global_step=total_steps)
 
                     print(f'EnvName:{BrifEnvName[opt.EnvIdex]}, Steps: {int(total_steps/1000)}k')
 
