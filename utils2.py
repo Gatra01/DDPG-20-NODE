@@ -76,7 +76,26 @@ def evaluate_policy(channel_gain, state, env, agent, turns=1):
     total_EE_rand=0
     total_power = 0
     total_power_rand=0
-    data_rates_per_node = [[] for _ in range(env.nodes)]
+    dr1=0
+    dr2=0
+    dr3=0
+    dr4=0
+    dr5=0
+    dr6=0
+    dr7=0
+    dr8=0
+    dr9=0
+    dr10=0
+    dr11=0
+    dr12=0
+    dr13=0
+    dr14=0
+    dr15=0
+    dr16=0
+    dr17=0
+    dr18=0
+    dr19=0
+    dr20=0
     # threshold constraint (contoh)
     R_th = 1        # minimal data rate per UE [bit/s atau satuan yg kamu pakai]
     P_th = 5      # maksimal total power [W atau satuan yg kamu pakai]
@@ -115,11 +134,26 @@ def evaluate_policy(channel_gain, state, env, agent, turns=1):
             print(f'DDPG power : {a}, reward :{r}')
             print(f'random power : {a_rand}, reward :{r1}')
 
-            for i in range(env.nodes):
-                dr = info[f'data_rate{i+1}']
-                data_rates_per_node[i].append(dr)
-                #dr1 = info1[f'data_rate{i+1}']
-                #data_rates_rand_per_node[i].append(dr1)
+            dr1+=info[data_rate1]
+            dr2+=info[data_rate2]
+            dr3+=info[data_rate3]
+            dr4+=info[data_rate4]
+            dr5+=info[data_rate5]
+            dr6+=info[data_rate6]
+            dr7+=info[data_rate7]
+            dr8+=info[data_rate8]
+            dr9+=info[data_rate9]
+            dr10+=info[data_rate10]
+            dr11+=info[data_rate11]
+            dr12+=info[data_rate12]
+            dr13+=info[data_rate13]
+            dr14+=info[data_rate14]
+            dr15+=info[data_rate15]
+            dr16+=info[data_rate16]
+            dr17+=info[data_rate17]
+            dr18+=info[data_rate18]
+            dr19+=info[data_rate19]
+            dr20+=info[data_rate20]
             
             
 
@@ -213,7 +247,6 @@ def evaluate_policy(channel_gain, state, env, agent, turns=1):
     pct_power_ok_rand = 100 * count_power_ok_rand / total_steps
     return {
         'avg_score':    avg_score,
-        'data_rates_per_node': data_rates_per_node,
         'avg_score_rand' : avg_score_rand,
         'avg_EE':       avg_EE,
         'avg_EE_rand':       avg_EE_rand,
@@ -221,13 +254,29 @@ def evaluate_policy(channel_gain, state, env, agent, turns=1):
         'pct_data_ok':  pct_data_ok,
         'pct_data_ok_rand':  pct_data_ok_rand,
         'pct_power_ok_rand':  pct_power_ok_rand,
-        'pct_power_ok': pct_power_ok
-        #'data_rate_1': info[data_rate1],
-        #'data_rate_7': info[data_rate7],
-        #'data_rate_8': info[data_rate8],
-        #'data_rate_11': info[data_rate11],
-        #'data_rate_15': info[data_rate15],
-        #'data_rate_20': info[data_rate20]
+        'pct_power_ok': pct_power_ok,
+        'data_rate_1': dr1,
+        'data_rate_2': dr2,
+        'data_rate_3': dr3,
+        'data_rate_4': dr4,
+        'data_rate_5': dr5,
+        'data_rate_6': dr6,
+        'data_rate_7': dr7,
+        'data_rate_8': dr8,
+        'data_rate_9': dr9,
+        'data_rate_10': dr10,
+        'data_rate_11': dr11,
+        'data_rate_12': dr12,
+        'data_rate_13': dr13,
+        'data_rate_14': dr14,
+        'data_rate_15': dr15,
+        'data_rate_16': dr16,
+        'data_rate_17': dr17,
+        'data_rate_18': dr18,
+        'data_rate_19': dr19,
+        'data_rate_20': dr20
+        
+        
     }
 
 
