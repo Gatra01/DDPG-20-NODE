@@ -160,8 +160,9 @@ def main():
                         #writer.add_scalar('data_rate_11', result['data_rate_11'], global_step=total_steps)
                         #writer.add_scalar('data_rate_15', result['data_rate_15'], global_step=total_steps)
                         #writer.add_scalar('data_rate_20', result['data_rate_20'], global_step=total_steps)
-                        for i, dr in enumerate(result['data_rates_per_node']):
-                            writer.add_scalar(f'data_rate/node_{i+1}', dr, global_step=total_steps)
+                        dr_dict = {f'node_{i+1}': dr_i for i, dr_i in enumerate(data_rates)}
+                        writer.add_scalars('data_rate/all_nodes', dr_dict, global_step=total_steps)
+
 
                     print(f'EnvName:{BrifEnvName[opt.EnvIdex]}, Steps: {int(total_steps/1000)}k')
 
