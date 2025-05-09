@@ -174,6 +174,8 @@ def main():
                         writer.add_scalar('data_rate_17', result['data_rate_17'], global_step=total_steps)
                         writer.add_scalar('data_rate_18', result['data_rate_18'], global_step=total_steps)
                         writer.add_scalar('data_rate_19', result['data_rate_19'], global_step=total_steps)
+                        writer.add_scalar('data_rate_pass', result['data_rate_pass'], global_step=total_steps)
+                        writer.add_scalar('data_rate_random_pass', result['data_rate_rand_pass'], global_step=total_steps)
                         
                         
 
