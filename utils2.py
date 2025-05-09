@@ -68,7 +68,7 @@ class Q_Critic(nn.Module):
         q = self.l4(x)                                   # [B, 1]
         return q
 
-def evaluate_policy(channel_gain, state, env, agent, turns=3):
+def evaluate_policy(channel_gain, state, env, agent, turns=1):
     env = GameState(20,5)
     total_scores = 0
     total_scores_rand = 0 
@@ -76,7 +76,7 @@ def evaluate_policy(channel_gain, state, env, agent, turns=3):
     total_EE_rand=0
     total_power = 0
     total_power_rand=0
-
+    data_rates_per_node = [[] for _ in range(num_nodes)]
     # threshold constraint (contoh)
     R_th = 1        # minimal data rate per UE [bit/s atau satuan yg kamu pakai]
     P_th = 5      # maksimal total power [W atau satuan yg kamu pakai]
@@ -114,6 +114,14 @@ def evaluate_policy(channel_gain, state, env, agent, turns=3):
             s_next1, r1, dw1, tr1, info1 = env.step(a_rand, channel_gain, next_channel_gain)
             print(f'DDPG power : {a}, reward :{r}')
             print(f'random power : {a_rand}, reward :{r1}')
+
+            for i in range(num_nodes):
+                dr = info[f'data_rate{i+1}']
+                data_rates_per_node[i].append(dr)
+                dr1 = info1[f'data_rate{i+1}']
+                data_rates_rand_per_node[i].append(dr1)
+            
+            
 
             # cek constraint data rate: pastikan semua UE ≥ R_th untuk ddpg
             data_rates = [
@@ -205,6 +213,7 @@ def evaluate_policy(channel_gain, state, env, agent, turns=3):
     pct_power_ok_rand = 100 * count_power_ok_rand / total_steps
     return {
         'avg_score':    avg_score,
+        'data_rates_per_node': data_rates_per_node,
         'avg_score_rand' : avg_score_rand,
         'avg_EE':       avg_EE,
         'avg_EE_rand':       avg_EE_rand,
