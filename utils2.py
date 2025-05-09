@@ -76,7 +76,7 @@ def evaluate_policy(channel_gain, state, env, agent, turns=1):
     total_EE_rand=0
     total_power = 0
     total_power_rand=0
-    data_rates_per_node = [[] for _ in range(num_nodes)]
+    data_rates_per_node = [[] for _ in range(env.nodes)]
     # threshold constraint (contoh)
     R_th = 1        # minimal data rate per UE [bit/s atau satuan yg kamu pakai]
     P_th = 5      # maksimal total power [W atau satuan yg kamu pakai]
