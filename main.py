@@ -154,16 +154,28 @@ def main():
                         writer.add_scalar('constraint data rate', result['pct_data_ok'], global_step=total_steps)
                         writer.add_scalar('constraint daya random', result['pct_power_ok_rand'], global_step=total_steps)
                         writer.add_scalar('constraint data rate random', result['pct_data_ok_rand'], global_step=total_steps)
-                        #writer.add_scalar('data_rate_1', result['data_rate_1'], global_step=total_steps)
-                        #writer.add_scalar('data_rate_7', result['data_rate_7'], global_step=total_steps)
-                        #writer.add_scalar('data_rate_8', result['data_rate_8'], global_step=total_steps)
-                        #writer.add_scalar('data_rate_11', result['data_rate_11'], global_step=total_steps)
-                        #writer.add_scalar('data_rate_15', result['data_rate_15'], global_step=total_steps)
-                        #writer.add_scalar('data_rate_20', result['data_rate_20'], global_step=total_steps)
-                        data_rates=result['data_rates_per_node']
-                        dr_dict = {f'node_{i+1}': dr_i for i, dr_i in enumerate(data_rates)}
-                        writer.add_scalars('data_rate/all_nodes', dr_dict, global_step=total_steps)
-
+                        writer.add_scalar('data_rate_1', result['data_rate_1'], global_step=total_steps)
+                        writer.add_scalar('data_rate_7', result['data_rate_7'], global_step=total_steps)
+                        writer.add_scalar('data_rate_8', result['data_rate_8'], global_step=total_steps)
+                        writer.add_scalar('data_rate_11', result['data_rate_11'], global_step=total_steps)
+                        writer.add_scalar('data_rate_15', result['data_rate_15'], global_step=total_steps)
+                        writer.add_scalar('data_rate_20', result['data_rate_20'], global_step=total_steps)
+                        writer.add_scalar('data_rate_2', result['data_rate_2'], global_step=total_steps)
+                        writer.add_scalar('data_rate_3', result['data_rate_3'], global_step=total_steps)
+                        writer.add_scalar('data_rate_4', result['data_rate_4'], global_step=total_steps)
+                        writer.add_scalar('data_rate_5', result['data_rate_5'], global_step=total_steps)
+                        writer.add_scalar('data_rate_6', result['data_rate_6'], global_step=total_steps)
+                        writer.add_scalar('data_rate_9', result['data_rate_9'], global_step=total_steps)
+                        writer.add_scalar('data_rate_10', result['data_rate_10'], global_step=total_steps)
+                        writer.add_scalar('data_rate_12', result['data_rate_12'], global_step=total_steps)
+                        writer.add_scalar('data_rate_13', result['data_rate_13'], global_step=total_steps)
+                        writer.add_scalar('data_rate_14', result['data_rate_14'], global_step=total_steps)
+                        writer.add_scalar('data_rate_16', result['data_rate_16'], global_step=total_steps)
+                        writer.add_scalar('data_rate_17', result['data_rate_17'], global_step=total_steps)
+                        writer.add_scalar('data_rate_18', result['data_rate_18'], global_step=total_steps)
+                        writer.add_scalar('data_rate_19', result['data_rate_19'], global_step=total_steps)
+                        
+                        
 
                     print(f'EnvName:{BrifEnvName[opt.EnvIdex]}, Steps: {int(total_steps/1000)}k')
 
