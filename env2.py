@@ -89,7 +89,7 @@ class GameState:
         'total_power': float(np.sum(power))
         }
 
-        reward = np.sum(data_rate_constraint) + EE + 5*self.step_function(total_daya-self.p_max)
+        reward = -np.sum(data_rate_constraint) + EE - 5*self.step_function(total_daya-self.p_max)
         obs = np.concatenate([self.norm(next_channel_gain).ravel(),self.norm(next_intr).ravel(),self.norm(power)])
         return obs.astype(np.float32), float(reward), dw,False, info
     def norm(self,x):
