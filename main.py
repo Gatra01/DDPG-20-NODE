@@ -33,6 +33,11 @@ parser.add_argument('--noise', type=float, default=0.1, help='exploring noise') 
 opt = parser.parse_args()
 opt.dvc = torch.device(opt.dvc) # from str to torch.device
 
+def compute_cdf(data):
+    x = np.sort(data)
+    y = np.arange(1, len(x)+1) / len(x)
+    return x, y
+
 def main():
     EnvName = ['Power Allocation','LunarLanderContinuous-v2','Humanoid-v4','HalfCheetah-v4','BipedalWalker-v3','BipedalWalkerHardcore-v3']
     #BrifEnvName = ['PV1', 'LLdV2', 'Humanv4', 'HCv4','BWv3', 'BWHv3']
@@ -51,6 +56,8 @@ def main():
     iterasi = 200
     total_episode = -(-opt.Max_train_steps//iterasi)
     sepertiga_eps=total_episode//3
+    EE_DDPG=[]
+    EE_RAND=[]
 
     
     # Seed Everything
@@ -145,6 +152,9 @@ def main():
                     state_eval,inf=eval_env.reset(channel_gain)
                     state_eval = np.array(state_eval, dtype=np.float32)
                     result = evaluate_policy(channel_gain,state_eval,eval_env, agent, turns=1)
+                    EE_DDPG.append(result['avg_EE'])
+                    EE_RAND.append(result['avg_EE_rand'])
+                    
                     if opt.write: 
                         writer.add_scalar('ep_r', result['avg_score'], global_step=total_steps)
                         writer.add_scalar('energi efisiensi', result['avg_EE'], global_step=total_steps)
@@ -189,6 +199,23 @@ def main():
                     agent.save(BrifEnvName[opt.EnvIdex], int(total_steps/1000))
                 s = s_next
                 channel_gain=next_channel_gain
+
+        x_ddpg, y_ddpg = compute_cdf(EE_DDPG)
+        x_rand, y_rand = compute_cdf(EE_RAND)
+        # setelah kamu hitung x_ddpg, y_ddpg
+        fig, ax = plt.subplots()
+        ax.plot(x_ddpg, y_ddpg, label='DDPG')
+        ax.plot(x_rand, y_rand, label='Random')
+        ax.set_xlabel('Energi Efisiensi')
+        ax.set_ylabel('CDF')
+        ax.set_title('CDF Energi Efisiensi')
+        ax.legend()
+        ax.grid(True)
+
+        #     log figure
+        if opt.write :
+            writer.add_figure('CDF Energi Efisiensi', fig, global_step=total_steps)
+            plt.close(fig)
         print("The end")
 
 #%load_ext tensorboard
