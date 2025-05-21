@@ -58,6 +58,8 @@ def main():
     sepertiga_eps=total_episode//3
     EE_DDPG=[] #buat cdf
     EE_RAND=[] #buat_cdf
+    RATE_SUCCESS=[]
+    RATE_SUCCESS_RAND=[]
 
     
     # Seed Everything
@@ -154,6 +156,8 @@ def main():
                     result = evaluate_policy(channel_gain,state_eval,eval_env, agent, turns=1)
                     EE_DDPG.append(result['avg_EE'])
                     EE_RAND.append(result['avg_EE_rand'])
+                    RATE_SUCCESS.append(result['pct_data_ok'])
+                    RATE_SUCCESS_RAND.append(result['pct_data_ok_rand'])
                     
                     if opt.write: 
                         writer.add_scalar('ep_r', result['avg_score'], global_step=total_steps)
@@ -202,7 +206,10 @@ def main():
 
         x_ddpg, y_ddpg = compute_cdf(EE_DDPG)
         x_rand, y_rand = compute_cdf(EE_RAND)
-        # setelah kamu hitung x_ddpg, y_ddpg
+        x_rate, y_rate = compute_cdf(RATE_SUCCESS)
+        x_rate_rand, y_rate_rand = compute_cdf(RATE_SUCCESS_RAND)
+        
+        # PLOT CDF EE
         fig, ax = plt.subplots()
         ax.plot(x_ddpg, y_ddpg, label='DDPG')
         ax.plot(x_rand, y_rand, label='Random')
@@ -216,6 +223,20 @@ def main():
         if opt.write :
             writer.add_figure('CDF Energi Efisiensi', fig, global_step=total_steps)
             plt.close(fig)
+
+        # 2) Plot CDF Data Rate Success
+        fig2, ax2 = plt.subplots()
+        ax2.plot(x_rate, y_rate, label='DDPG')
+        ax2.plot(x_rate_rand, y_rate_rand, label='Random')
+        ax2.set_xlabel('Persentase UE ≥ R_th (%)')
+        ax2.set_ylabel('CDF')
+        ax2.set_title('CDF Success Rate Data Rate')
+        ax2.legend()
+        ax2.grid(True)
+
+        if opt.write:
+            writer.add_figure('CDF Data Rate Success', fig2, global_step=total_steps)
+            plt.close(fig2)
         print("The end")
 
 #%load_ext tensorboard
