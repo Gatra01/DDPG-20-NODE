@@ -56,8 +56,8 @@ def main():
     iterasi = 200
     total_episode = -(-opt.Max_train_steps//iterasi)
     sepertiga_eps=total_episode//3
-    EE_DDPG=[]
-    EE_RAND=[]
+    EE_DDPG=[] #buat cdf
+    EE_RAND=[] #buat_cdf
 
     
     # Seed Everything
