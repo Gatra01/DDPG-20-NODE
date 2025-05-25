@@ -2,7 +2,7 @@ import numpy as np
 from typing import Optional
 
 class GameState:
-    def __init__(self, nodes, p_max, area_size=(10, 10)):
+    def __init__(self, nodes, p_max, area_size=(20, 20)):
         self.nodes = nodes
         self.p_max = p_max
         self.gamma = 0.01
