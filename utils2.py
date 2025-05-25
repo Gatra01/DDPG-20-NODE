@@ -215,13 +215,14 @@ def evaluate_policy(channel_gain, state, env, agent, turns=1):
             if all(dr >= R_th for dr in data_rates1):
                 count_data_ok_rand += 1
 
-            for i in range(env.nodes):
+            '''for i in range(env.nodes):
                 if data_rates[i] >= R_th :
                     count+=1
                 if data_rates1[i] >= R_th :
                     count_rand +=1
                 jumlah_data_rate += data_rates[i]
                 jumlah_data_rate_rand+=data_rates1[i]
+            '''
 
 
             # cek constraint power: total_power ≤ P_th
