@@ -150,16 +150,16 @@ def evaluate_policy(channel_gain, state, env, agent, turns=1):
             dr8+=info['data_rate8']
             dr9+=info['data_rate9']
             dr10+=info['data_rate10']
-            dr11+=info['data_rate11']
-            dr12+=info['data_rate12']
-            dr13+=info['data_rate13']
-            dr14+=info['data_rate14']
-            dr15+=info['data_rate15']
-            dr16+=info['data_rate16']
-            dr17+=info['data_rate17']
-            dr18+=info['data_rate18']
-            dr19+=info['data_rate19']
-            dr20+=info['data_rate20']
+            #dr11+=info['data_rate11']
+            #dr12+=info['data_rate12']
+            #dr13+=info['data_rate13']
+            #dr14+=info['data_rate14']
+            #dr15+=info['data_rate15']
+            #dr16+=info['data_rate16']
+            #dr17+=info['data_rate17']
+            #dr18+=info['data_rate18']
+            #dr19+=info['data_rate19']
+            #dr20+=info['data_rate20']
             
             
 
@@ -175,16 +175,16 @@ def evaluate_policy(channel_gain, state, env, agent, turns=1):
                 info['data_rate8'],
                 info['data_rate9'],
                 info['data_rate10'],
-                info['data_rate11'],
-                info['data_rate12'],
-                info['data_rate13'],
-                info['data_rate14'],
-                info['data_rate15'],
-                info['data_rate16'],
-                info['data_rate17'],
-                info['data_rate18'],
-                info['data_rate19'],
-                info['data_rate20'],
+             #   info['data_rate11'],
+             #   info['data_rate12'],
+             #   info['data_rate13'],
+             #   info['data_rate14'],
+             #   info['data_rate15'],
+             #   info['data_rate16'],
+             #   info['data_rate17'],
+             #   info['data_rate18'],
+              #  info['data_rate19'],
+             #   info['data_rate20'],
             ]
             if all(dr >= R_th for dr in data_rates):
                 count_data_ok += 1
@@ -201,16 +201,16 @@ def evaluate_policy(channel_gain, state, env, agent, turns=1):
                 info1['data_rate8'],
                 info1['data_rate9'],
                 info1['data_rate10'],
-                info1['data_rate11'],
-                info1['data_rate12'],
-                info1['data_rate13'],
-                info1['data_rate14'],
-                info1['data_rate15'],
-                info1['data_rate16'],
-                info1['data_rate17'],
-                info1['data_rate18'],
-                info1['data_rate19'],
-                info1['data_rate20'],
+              #  info1['data_rate11'],
+              #  info1['data_rate12'],
+              #  info1['data_rate13'],
+              #  info1['data_rate14'],
+              #  info1['data_rate15'],
+              #  info1['data_rate16'],
+              #  info1['data_rate17'],
+              #  info1['data_rate18'],
+              #  info1['data_rate19'],
+              #  info1['data_rate20'],
             ]
             if all(dr >= R_th for dr in data_rates1):
                 count_data_ok_rand += 1
@@ -279,16 +279,16 @@ def evaluate_policy(channel_gain, state, env, agent, turns=1):
         'data_rate_8': dr8,
         'data_rate_9': dr9,
         'data_rate_10': dr10,
-        'data_rate_11': dr11,
-        'data_rate_12': dr12,
-        'data_rate_13': dr13,
-        'data_rate_14': dr14,
-        'data_rate_15': dr15,
-        'data_rate_16': dr16,
-        'data_rate_17': dr17,
-        'data_rate_18': dr18,
-        'data_rate_19': dr19,
-        'data_rate_20': dr20,
+        #'data_rate_11': dr11,
+        #'data_rate_12': dr12,
+        #'data_rate_13': dr13,
+        #'data_rate_14': dr14,
+        #'data_rate_15': dr15,
+        #'data_rate_16': dr16,
+        #'data_rate_17': dr17,
+        #'data_rate_18': dr18,
+        #'data_rate_19': dr19,
+        #'data_rate_20': dr20,
         'data_rate_pass' : count, 
         'data_rate_rand_pass' : count_rand,
         'data_rate_total' : jumlah_data_rate,
