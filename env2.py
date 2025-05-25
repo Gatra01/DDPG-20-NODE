@@ -86,7 +86,7 @@ class GameState:
         #'data_rate18': data_rate[17],
         #'data_rate19': data_rate[18],
         #'data_rate20': data_rate[19],
-        #'total_power': float(np.sum(power))
+        'total_power': float(np.sum(power))
         }
 
         reward = -np.sum(data_rate_constraint) + EE - 5*self.step_function(total_daya-self.p_max)
