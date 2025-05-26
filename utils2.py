@@ -266,6 +266,7 @@ def evaluate_policy(channel_gain, state, env, agent, turns=1):
         'avg_EE':       avg_EE,
         'avg_EE_rand':       avg_EE_rand,
         'avg_power':    avg_power,
+        'avg_power_rand' : avg_power_rand,
         'pct_data_ok':  pct_data_ok,
         'pct_data_ok_rand':  pct_data_ok_rand,
         'pct_power_ok_rand':  pct_power_ok_rand,
