@@ -96,6 +96,16 @@ def evaluate_policy(channel_gain, state, env, agent, turns=1):
     dr18=0
     dr19=0
     dr20=0
+    dr21=0
+    dr22=0
+    dr23=0
+    dr24=0
+    dr25=0
+    dr26=0
+    dr27=0
+    dr28=0
+    dr29=0
+    dr30=0
     # threshold constraint (contoh)
     R_th = 2        # minimal data rate per UE [bit/s atau satuan yg kamu pakai]
     P_th = 5      # maksimal total power [W atau satuan yg kamu pakai]
