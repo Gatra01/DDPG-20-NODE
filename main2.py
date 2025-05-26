@@ -60,7 +60,10 @@ def main():
     EE_RAND=[] #buat_cdf
     RATE_SUCCESS=[]
     RATE_SUCCESS_RAND=[]
-
+    POWER_DDPG = []
+    POWER_RAND = []
+    ALL_DATARATES_NODES = [[] for _ in range(env.nodes)]  # List terpisah untuk setiap node
+    
     
     # Seed Everything
     env_seed = opt.seed
@@ -166,12 +169,16 @@ def main():
                             state_eval,inf=eval_env.reset(channel_gain_eval)
                             state_eval = np.array(state_eval, dtype=np.float32)
                             result1 = evaluate_policy(channel_gain_eval,state_eval,eval_env, agent, turns=1)
+                            for node_id in range(1, env.nodes+1):
+                                ALL_DATARATES_NODES[node_id - 1].append(result1[f'data_rate_{node_id}'])
                             print(result1['avg_EE'])
                             print(result1['avg_EE_rand'])
                             EE_DDPG.append(result1['avg_EE'])
                             EE_RAND.append(result1['avg_EE_rand'])
                             RATE_SUCCESS.append(result1['pct_data_ok'])
-                            RATE_SUCCESS_RAND.append(result1['pct_data_ok_rand'])                    
+                            RATE_SUCCESS_RAND.append(result1['pct_data_ok_rand'])
+                            POWER_DDPG.append(result1['avg_power'])
+                            POWER_RAND.append(result1['avg_power_rand'])
                             if opt.write: 
                                 writer.add_scalar('ep_r', result1['avg_score'], global_step=st)
                                 writer.add_scalar('energi efisiensi', result1['avg_EE'], global_step=st)
@@ -225,6 +232,8 @@ def main():
         x_rand, y_rand = compute_cdf(EE_RAND)
         x_rate, y_rate = compute_cdf(RATE_SUCCESS)
         x_rate_rand, y_rate_rand = compute_cdf(RATE_SUCCESS_RAND)
+        x_p, y_p = compute_cdf(POWER_DDPG)
+        x_p_rand, y_p_rand = compute_cdf(POWER_RAND)
         
         # PLOT CDF EE
         fig, ax = plt.subplots()
@@ -254,6 +263,40 @@ def main():
         if opt.write:
             writer.add_figure('CDF Data Rate Success', fig2, global_step=st)
             plt.close(fig2)
+
+                # 3) Plot CDF power
+        fig3, ax3 = plt.subplots()
+        ax3.plot(x_p, y_p, label='Power DDPG')
+        ax3.plot(x_p_rand, y_p_rand, label='Power Random')
+        ax2.set_xlabel('Power')
+        ax2.set_ylabel('CDF')
+        ax2.set_title('CDF POWER')
+        ax2.legend()
+        ax2.grid(True)
+
+        if opt.write:
+            writer.add_figure('CDF Power', fig3, global_step=st)
+            plt.close(fig3)
+        # 4) Plot CDF Data Rate per Node
+        fig4, ax4 = plt.subplots(figsize=(10, 6))
+        for idx, node_data in enumerate(ALL_DATARATES_NODES, 1):
+            x, y = compute_cdf(node_data)
+            ax4.plot(x, y, label=f'Node {idx}')
+
+        # Garis vertikal untuk R_min
+        R_min = 2.0
+        ax4.axvline(R_min, color='red', linestyle='--', label=f'R_min = {R_min}')
+
+        ax4.set_xlabel('Data Rate')
+        ax4.set_ylabel('CDF')
+        ax4.set_title('CDF of Data Rate per Node')
+        ax4.legend(bbox_to_anchor=(1.05, 1), loc='upper left', fontsize='small', ncol=2)
+        ax4.grid(True)
+        plt.tight_layout()
+
+        if opt.write:
+            writer.add_figure('CDF Data Rate per Node', fig4, global_step=st)
+            plt.close(fig4)
         print(EE_DDPG)
         print(EE_RAND)
         print("The end")
