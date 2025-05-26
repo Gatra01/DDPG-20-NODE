@@ -166,6 +166,8 @@ def main():
                             state_eval,inf=eval_env.reset(channel_gain_eval)
                             state_eval = np.array(state_eval, dtype=np.float32)
                             result1 = evaluate_policy(channel_gain_eval,state_eval,eval_env, agent, turns=1)
+                            print(f'energi efisiensi {result1['avg_EE']}, global_step={st}')
+                            print(f'energi efisiensi random, {result1['avg_EE_rand']}, global_step={st}')
                             EE_DDPG.append(result['avg_EE'])
                             EE_RAND.append(result['avg_EE_rand'])
                             RATE_SUCCESS.append(result['pct_data_ok'])
