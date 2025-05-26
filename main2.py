@@ -203,6 +203,7 @@ def main():
                                 writer.add_scalar('data_rate_random_pass', result['data_rate_rand_pass'], global_step=st)
                                 writer.add_scalar('jumlah data rate', result['data_rate_total'], global_step=st)
                                 writer.add_scalar('jumlah data rate random', result['data_rate_total_rand'], global_step=st)
+                            print(f'EnvName:{BrifEnvName[opt.EnvIdex]}, Steps: {int(st)}')
                             st+=1
                         
                         
