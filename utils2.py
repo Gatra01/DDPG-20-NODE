@@ -150,16 +150,26 @@ def evaluate_policy(channel_gain, state, env, agent, turns=1):
             dr8+=info['data_rate8']
             dr9+=info['data_rate9']
             dr10+=info['data_rate10']
-            #dr11+=info['data_rate11']
-            #dr12+=info['data_rate12']
-            #dr13+=info['data_rate13']
-            #dr14+=info['data_rate14']
-            #dr15+=info['data_rate15']
-            #dr16+=info['data_rate16']
-            #dr17+=info['data_rate17']
-            #dr18+=info['data_rate18']
-            #dr19+=info['data_rate19']
-            #dr20+=info['data_rate20']
+            dr11+=info['data_rate11']
+            dr12+=info['data_rate12']
+            dr13+=info['data_rate13']
+            dr14+=info['data_rate14']
+            dr15+=info['data_rate15']
+            dr16+=info['data_rate16']
+            dr17+=info['data_rate17']
+            dr18+=info['data_rate18']
+            dr19+=info['data_rate19']
+            dr20+=info['data_rate20']
+            dr21+=info['data_rate21']
+            dr22+=info['data_rate22']
+            dr23+=info['data_rate23']
+            dr24+=info['data_rate24']
+            dr25+=info['data_rate25']
+            dr26+=info['data_rate26']
+            dr27+=info['data_rate27']
+            dr28+=info['data_rate28']
+            dr29+=info['data_rate29']
+            dr30+=info['data_rate30']
             
             
 
@@ -175,16 +185,26 @@ def evaluate_policy(channel_gain, state, env, agent, turns=1):
                 info['data_rate8'],
                 info['data_rate9'],
                 info['data_rate10'],
-                #info['data_rate11'],
-                #info['data_rate12'],
-                #info['data_rate13'],
-                #info['data_rate14'],
-                #info['data_rate15'],
-                #info['data_rate16'],
-                #info['data_rate17'],
-                #info['data_rate18'],
-                #info['data_rate19'],
-                #info['data_rate20'],'''
+                info['data_rate11'],
+                info['data_rate12'],
+                info['data_rate13'],
+                info['data_rate14'],
+                info['data_rate15'],
+                info['data_rate16'],
+                info['data_rate17'],
+                info['data_rate18'],
+                info['data_rate19'],
+                info['data_rate20'],
+                info['data_rate21'],
+                info['data_rate22'],
+                info['data_rate23'],
+                info['data_rate24'],
+                info['data_rate25'],
+                info['data_rate26'],
+                info['data_rate27'],
+                info['data_rate28'],
+                info['data_rate29'],
+                info['data_rate30'],
             ]
             if all(dr >= R_th for dr in data_rates):
                 count_data_ok += 1
@@ -201,16 +221,26 @@ def evaluate_policy(channel_gain, state, env, agent, turns=1):
                 info1['data_rate8'],
                 info1['data_rate9'],
                 info1['data_rate10'],
-                #info1['data_rate11'],
-                #info1['data_rate12'],
-                #info1['data_rate13'],
-                #info1['data_rate14'],
-                #info1['data_rate15'],
-                #info1['data_rate16'],
-                #info1['data_rate17'],
-                #info1['data_rate18'],
-                #info1['data_rate19'],
-                #info1['data_rate20'],'''
+                info1['data_rate11'],
+                info1['data_rate12'],
+                info1['data_rate13'],
+                info1['data_rate14'],
+                info1['data_rate15'],
+                info1['data_rate16'],
+                info1['data_rate17'],
+                info1['data_rate18'],
+                info1['data_rate19'],
+                info1['data_rate20'],
+                info1['data_rate21'],
+                info1['data_rate22'],
+                info1['data_rate23'],
+                info1['data_rate24'],
+                info1['data_rate25'],
+                info1['data_rate26'],
+                info1['data_rate27'],
+                info1['data_rate28'],
+                info1['data_rate29'],
+                info1['data_rate30'],
             ]
             if all(dr >= R_th for dr in data_rates1):
                 count_data_ok_rand += 1
@@ -279,16 +309,26 @@ def evaluate_policy(channel_gain, state, env, agent, turns=1):
         'data_rate_8': dr8,
         'data_rate_9': dr9,
         'data_rate_10': dr10,
-        #'data_rate_11': dr11,
-        #'data_rate_12': dr12,
-        #'data_rate_13': dr13,
-        #'data_rate_14': dr14,
-        #'data_rate_15': dr15,
-        #'data_rate_16': dr16,
-        #'data_rate_17': dr17,
-        #'data_rate_18': dr18,
-        #'data_rate_19': dr19,
-        #'data_rate_20': dr20,'''
+        'data_rate_11': dr11,
+        'data_rate_12': dr12,
+        'data_rate_13': dr13,
+        'data_rate_14': dr14,
+        'data_rate_15': dr15,
+        'data_rate_16': dr16,
+        'data_rate_17': dr17,
+        'data_rate_18': dr18,
+        'data_rate_19': dr19,
+        'data_rate_20': dr20,
+        'data_rate_21': dr21,
+        'data_rate_22': dr22,
+        'data_rate_23': dr23,
+        'data_rate_24': dr24,
+        'data_rate_25': dr25,
+        'data_rate_26': dr26,
+        'data_rate_27': dr27,
+        'data_rate_28': dr28,
+        'data_rate_29': dr29,
+        'data_rate_30': dr30,
         'data_rate_pass' : count, 
         'data_rate_rand_pass' : count_rand,
         #'data_rate_total' : jumlah_data_rate,
