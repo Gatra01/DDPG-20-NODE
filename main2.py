@@ -116,7 +116,8 @@ def main():
             done = False
             langkah = 0
             '''Interact & trian'''
-            while not done:  
+            while not done: 
+                print(total_steps)
                 langkah +=1
                 if total_steps <= opt.random_steps: #aslinya < aja, ide pengubahan ini tuh supaya selec action di train dulu.
                     a = env.sample_valid_power()
