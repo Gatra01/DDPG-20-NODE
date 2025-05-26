@@ -45,8 +45,8 @@ def main():
     BrifEnvName = ['6G', 'LLdV2', 'Humanv4', 'HCv4','BWv3', 'BWHv3']
     
     # Build Env
-    env = GameState(20,5)
-    eval_env = GameState(20,5)
+    env = GameState(10,3)
+    eval_env = GameState(10,3)
     opt.state_dim = env.observation_space
     opt.action_dim = env.action_space
     opt.max_action = env.p_max   #remark: action space【-max,max】
@@ -162,6 +162,7 @@ def main():
                     state_eval,inf=eval_env.reset(channel_gain)
                     state_eval = np.array(state_eval, dtype=np.float32)
                     result = evaluate_policy(channel_gain,state_eval,eval_env, agent, turns=1)
+                    writer.add_scalar('ep_r', result['avg_score'], global_step=total_steps)
                     if total_steps == opt.Max_train_steps:
                         st=0
                         for i in range(200):
@@ -186,7 +187,7 @@ def main():
                                 writer.add_scalar('energi efisiensi random', result1['avg_EE_rand'], global_step=st)
                                 writer.add_scalar('total daya', result1['avg_power'], global_step=st)
                                 writer.add_scalar('constraint daya', result1['pct_power_ok'], global_step=st)
-                                
+                                '''
                                 writer.add_scalar('constraint data rate', result1['pct_data_ok'], global_step=st)
                                 writer.add_scalar('constraint daya random', result1['pct_power_ok_rand'], global_step=st)
                                 writer.add_scalar('constraint data rate random', result1['pct_data_ok_rand'], global_step=st)
@@ -215,6 +216,7 @@ def main():
                                 writer.add_scalar('data_rate_random_pass', result1['data_rate_rand_pass'], global_step=st)
                                 writer.add_scalar('jumlah data rate', result1['data_rate_total'], global_step=st)
                                 writer.add_scalar('jumlah data rate random', result1['data_rate_total_rand'], global_step=st)
+                                '''
                             print(f'EnvName:{BrifEnvName[opt.EnvIdex]}, Steps: {int(st)}')
                             st+=1
                         
