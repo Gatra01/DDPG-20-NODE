@@ -150,7 +150,8 @@ def main():
                     # print(f'EnvName:{BrifEnvName[opt.EnvIdex]}, Steps: {int(total_steps/1000)}k, c_loss:{c_loss}')
         
                 '''record & log'''
-                if total_steps % opt.eval_interval == 0:
+                #if total_steps % opt.eval_interval == 0:
+                if total_steps == opt.Max_train_steps:
                     state_eval,inf=eval_env.reset(channel_gain)
                     state_eval = np.array(state_eval, dtype=np.float32)
                     result = evaluate_policy(channel_gain,state_eval,eval_env, agent, turns=1)
