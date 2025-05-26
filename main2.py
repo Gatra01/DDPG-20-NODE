@@ -151,52 +151,59 @@ def main():
                     # print(f'EnvName:{BrifEnvName[opt.EnvIdex]}, Steps: {int(total_steps/1000)}k, c_loss:{c_loss}')
         
                 '''record & log'''
-                #if total_steps % opt.eval_interval == 0:
-                if total_steps == opt.Max_train_steps:
-                    st=0
-                    for i in range(200):
-                        state_eval,inf=eval_env.reset(channel_gain)
-                        state_eval = np.array(state_eval, dtype=np.float32)
-                        result = evaluate_policy(channel_gain,state_eval,eval_env, agent, turns=1)
-                        EE_DDPG.append(result['avg_EE'])
-                        EE_RAND.append(result['avg_EE_rand'])
-                        RATE_SUCCESS.append(result['pct_data_ok'])
-                        RATE_SUCCESS_RAND.append(result['pct_data_ok_rand'])
-                    
-                        if opt.write: 
-                            writer.add_scalar('ep_r', result['avg_score'], global_step=st)
-                            writer.add_scalar('energi efisiensi', result['avg_EE'], global_step=st)
-                            writer.add_scalar('energi efisiensi random', result['avg_EE_rand'], global_step=st)
-                            writer.add_scalar('total daya', result['avg_power'], global_step=st)
-                            writer.add_scalar('constraint daya', result['pct_power_ok'], global_step=st)
-                            writer.add_scalar('constraint data rate', result['pct_data_ok'], global_step=st)
-                            writer.add_scalar('constraint daya random', result['pct_power_ok_rand'], global_step=st)
-                            writer.add_scalar('constraint data rate random', result['pct_data_ok_rand'], global_step=st)
-                            writer.add_scalar('data_rate_1', result['data_rate_1'], global_step=st)
-                            writer.add_scalar('data_rate_7', result['data_rate_7'], global_step=st)
-                            writer.add_scalar('data_rate_8', result['data_rate_8'], global_step=st)
-                            writer.add_scalar('data_rate_11', result['data_rate_11'], global_step=st)
-                            writer.add_scalar('data_rate_15', result['data_rate_15'], global_step=st)
-                            writer.add_scalar('data_rate_20', result['data_rate_20'], global_step=st)
-                            writer.add_scalar('data_rate_2', result['data_rate_2'], global_step=st)
-                            writer.add_scalar('data_rate_3', result['data_rate_3'], global_step=st)
-                            writer.add_scalar('data_rate_4', result['data_rate_4'], global_step=st)
-                            writer.add_scalar('data_rate_5', result['data_rate_5'], global_step=st)
-                            writer.add_scalar('data_rate_6', result['data_rate_6'], global_step=st)
-                            writer.add_scalar('data_rate_9', result['data_rate_9'], global_step=st)
-                            writer.add_scalar('data_rate_10', result['data_rate_10'], global_step=st)
-                            writer.add_scalar('data_rate_12', result['data_rate_12'], global_step=st)
-                            writer.add_scalar('data_rate_13', result['data_rate_13'], global_step=st)
-                            writer.add_scalar('data_rate_14', result['data_rate_14'], global_step=st)
-                            writer.add_scalar('data_rate_16', result['data_rate_16'], global_step=st)
-                            writer.add_scalar('data_rate_17', result['data_rate_17'], global_step=st)
-                            writer.add_scalar('data_rate_18', result['data_rate_18'], global_step=st)
-                            writer.add_scalar('data_rate_19', result['data_rate_19'], global_step=st)
-                            writer.add_scalar('data_rate_pass', result['data_rate_pass'], global_step=st)
-                            writer.add_scalar('data_rate_random_pass', result['data_rate_rand_pass'], global_step=st)
-                            writer.add_scalar('jumlah data rate', result['data_rate_total'], global_step=st)
-                            writer.add_scalar('jumlah data rate random', result['data_rate_total_rand'], global_step=st)
-                        st+=1
+                if total_steps % opt.eval_interval == 0:
+                #if total_steps == opt.Max_train_steps:
+                    #st=0
+                    #for i in range(200):
+                    state_eval,inf=eval_env.reset(channel_gain)
+                    state_eval = np.array(state_eval, dtype=np.float32)
+                    result = evaluate_policy(channel_gain,state_eval,eval_env, agent, turns=1)
+                    if total_steps == opt.Max_train_steps:
+                        st=0
+                        for i in range(200):
+                            state_eval,inf=eval_env.reset(channel_gain)
+                            state_eval = np.array(state_eval, dtype=np.float32)
+                            result = evaluate_policy(channel_gain,state_eval,eval_env, agent, turns=1)
+                            EE_DDPG.append(result['avg_EE'])
+                            EE_RAND.append(result['avg_EE_rand'])
+                            RATE_SUCCESS.append(result['pct_data_ok'])
+                            RATE_SUCCESS_RAND.append(result['pct_data_ok_rand'])                    
+                            if opt.write: 
+                                writer.add_scalar('ep_r', result['avg_score'], global_step=st)
+                                writer.add_scalar('energi efisiensi', result['avg_EE'], global_step=st)
+                                writer.add_scalar('energi efisiensi random', result['avg_EE_rand'], global_step=st)
+                                writer.add_scalar('total daya', result['avg_power'], global_step=st)
+                                writer.add_scalar('constraint daya', result['pct_power_ok'], global_step=st)
+                                
+                                writer.add_scalar('constraint data rate', result['pct_data_ok'], global_step=st)
+                                writer.add_scalar('constraint daya random', result['pct_power_ok_rand'], global_step=st)
+                                writer.add_scalar('constraint data rate random', result['pct_data_ok_rand'], global_step=st)
+                                writer.add_scalar('data_rate_1', result['data_rate_1'], global_step=st)
+                                writer.add_scalar('data_rate_7', result['data_rate_7'], global_step=st)
+                                writer.add_scalar('data_rate_8', result['data_rate_8'], global_step=st)
+                                
+                                writer.add_scalar('data_rate_11', result['data_rate_11'], global_step=st)
+                                writer.add_scalar('data_rate_15', result['data_rate_15'], global_step=st)
+                                writer.add_scalar('data_rate_20', result['data_rate_20'], global_step=st)
+                                writer.add_scalar('data_rate_2', result['data_rate_2'], global_step=st)
+                                writer.add_scalar('data_rate_3', result['data_rate_3'], global_step=st)
+                                writer.add_scalar('data_rate_4', result['data_rate_4'], global_step=st)
+                                writer.add_scalar('data_rate_5', result['data_rate_5'], global_step=st)
+                                writer.add_scalar('data_rate_6', result['data_rate_6'], global_step=st)
+                                writer.add_scalar('data_rate_9', result['data_rate_9'], global_step=st)
+                                writer.add_scalar('data_rate_10', result['data_rate_10'], global_step=st)
+                                writer.add_scalar('data_rate_12', result['data_rate_12'], global_step=st)
+                                writer.add_scalar('data_rate_13', result['data_rate_13'], global_step=st)
+                                writer.add_scalar('data_rate_14', result['data_rate_14'], global_step=st)
+                                writer.add_scalar('data_rate_16', result['data_rate_16'], global_step=st)
+                                writer.add_scalar('data_rate_17', result['data_rate_17'], global_step=st)
+                                writer.add_scalar('data_rate_18', result['data_rate_18'], global_step=st)
+                                writer.add_scalar('data_rate_19', result['data_rate_19'], global_step=st)
+                                writer.add_scalar('data_rate_pass', result['data_rate_pass'], global_step=st)
+                                writer.add_scalar('data_rate_random_pass', result['data_rate_rand_pass'], global_step=st)
+                                writer.add_scalar('jumlah data rate', result['data_rate_total'], global_step=st)
+                                writer.add_scalar('jumlah data rate random', result['data_rate_total_rand'], global_step=st)
+                            st+=1
                         
                         
 
