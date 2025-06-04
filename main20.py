@@ -174,6 +174,7 @@ def main():
                             result1 = evaluate_policy(channel_gain_eval,state_eval,eval_env, agent, turns=1)
                             for node_id in range(1, env.nodes+1):
                                 ALL_DATARATES_NODES[node_id - 1].append(result1[f'data_rate_{node_id}'])
+                                ALL_DATARATES.append(result1[f'data_rate_{node_id}'])
                             print(result1['avg_EE'])
                             print(result1['avg_EE_rand'])
                             EE_DDPG.append(result1['avg_EE'])
