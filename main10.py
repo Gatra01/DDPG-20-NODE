@@ -64,6 +64,7 @@ def main():
     POWER_DDPG = []
     POWER_RAND = []
     ALL_DATARATES_NODES = [[] for _ in range(env.nodes)]  # List terpisah untuk setiap node
+    ALL_DATARATES=[]
     
     
     # Seed Everything
@@ -173,6 +174,7 @@ def main():
                             result1 = evaluate_policy(channel_gain_eval,state_eval,eval_env, agent, turns=1)
                             for node_id in range(1, env.nodes+1):
                                 ALL_DATARATES_NODES[node_id - 1].append(result1[f'data_rate_{node_id}'])
+                                ALL_DATARATES.append(result1[f'data_rate_{node_id}'])
                             print(result1['avg_EE'])
                             print(result1['avg_EE_rand'])
                             EE_DDPG.append(result1['avg_EE'])
@@ -293,6 +295,26 @@ def main():
         if opt.write:
             writer.add_figure('CDF Data Rate per Node', fig4, global_step=st)
             plt.close(fig4)
+        # 5) Plot CDF Data Rate sistem
+        x_dr, y_dr = compute_cdf(ALL_DATARATES)
+
+        fig5, ax5 = plt.subplots()
+        ax5.plot(x_dr, y_dr, label='Data Rate All Nodes')
+
+        # Tambahkan garis vertikal R_min
+        R_min = 2.0  # Ganti nilai ini sesuai dengan threshold R_min kamu
+        ax5.axvline(R_min, color='red', linestyle='--', label=f'R_min = {R_min}')
+
+        ax5.set_xlabel('Data Rate')
+        ax5.set_ylabel('CDF')
+        ax5.set_title('CDF of Data Rate (All Nodes)')
+        ax5.legend()
+        ax5.grid(True)
+
+        if opt.write:
+            writer.add_figure('CDF Data Rate Sistem', fig5, global_step=st)
+            plt.close(fig5)
+
         print(EE_DDPG)
         print(EE_RAND)
         print("The end")
