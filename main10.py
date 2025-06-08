@@ -336,9 +336,13 @@ def main():
             'POWER_DDPG': POWER_DDPG,
             'POWER_RAND': POWER_RAND,
         })
+        df1 = pd.DataFrame({
+            'ALL_DATARATES' : ALL_DATARATES,
+        })
 
 # Simpan ke Excel
-        df.to_excel(f'result_training_{BrifEnvName[opt.EnvIdex]}.xlsx', index=False)
+        df.to_excel(f'energi_efisiensi.xlsx', index=False)
+        df1.to_excel(f'all_data_rate.xlsx', index=False)
         print(EE_DDPG)
         print(EE_RAND)
         print("The end")
