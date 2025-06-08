@@ -163,7 +163,7 @@ def main():
                     state_eval,inf=eval_env.reset(channel_gain)
                     state_eval = np.array(state_eval, dtype=np.float32)
                     result = evaluate_policy(channel_gain,state_eval,eval_env, agent, turns=1)
-                    writer.add_scalar('ep_r', result['avg_score'], global_step=total_steps)
+                    writer.add_scalar('reward_training', result['avg_score'], global_step=total_steps)
                     if total_steps == opt.Max_train_steps:
                         st=0
                         for i in range(200):
