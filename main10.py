@@ -332,7 +332,7 @@ def main():
             'data_rate_4' :data_rate_4,
             'data_rate_7' :data_rate_7,
             'data_rate_10' :data_rate_10,
-            'ALL_DATARATES' : ALL_DATARATES,
+            #'ALL_DATARATES' : ALL_DATARATES,
             'POWER_DDPG': POWER_DDPG,
             'POWER_RAND': POWER_RAND,
         })
