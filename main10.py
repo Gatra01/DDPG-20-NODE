@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 import matplotlib.pyplot as plt
 from env10 import GameState
 from ddpg import *
@@ -22,7 +23,7 @@ parser.add_argument('--ModelIdex', type=int, default=100, help='which model to l
 parser.add_argument('--seed', type=int, default=0, help='random seed')
 parser.add_argument('--Max_train_steps', type=int, default = 30000, help='Max training steps') #aslinya 5e6
 parser.add_argument('--save_interval', type=int, default=2500, help='Model saving interval, in steps.') #aslinya 1e5
-parser.add_argument('--eval_interval', type=int, default=1000, help='Model evaluating interval, in steps.') #aslinya 2e3
+parser.add_argument('--eval_interval', type=int, default=500, help='Model evaluating interval, in steps.') #aslinya 2e3
 
 parser.add_argument('--gamma', type=float, default=0.99, help='Discounted Factor')
 parser.add_argument('--net_width', type=int, default=1024, help='Hidden net width, s_dim-400-300-a_dim')
@@ -65,7 +66,10 @@ def main():
     POWER_RAND = []
     ALL_DATARATES_NODES = [[] for _ in range(env.nodes)]  # List terpisah untuk setiap node
     ALL_DATARATES=[]
-    
+    data_rate_1 =[]
+    data_rate_4 =[]
+    data_rate_7 =[]
+    data_rate_10 =[]
     
     # Seed Everything
     env_seed = opt.seed
@@ -172,6 +176,10 @@ def main():
                             state_eval,inf=eval_env.reset(channel_gain_eval)
                             state_eval = np.array(state_eval, dtype=np.float32)
                             result1 = evaluate_policy(channel_gain_eval,state_eval,eval_env, agent, turns=1)
+                            data_rate_1.append(result1['data_rate_1'])
+                            data_rate_4.append(result1['data_rate_4'])
+                            data_rate_7.append(result1['data_rate_7'])
+                            data_rate_10.append(result1['data_rate_10'])
                             for node_id in range(1, env.nodes+1):
                                 ALL_DATARATES_NODES[node_id - 1].append(result1[f'data_rate_{node_id}'])
                                 ALL_DATARATES.append(result1[f'data_rate_{node_id}'])
@@ -314,10 +322,27 @@ def main():
         if opt.write:
             writer.add_figure('CDF Data Rate Sistem', fig5, global_step=st)
             plt.close(fig5)
+        
 
+        # Buat dataframe
+        df = pd.DataFrame({
+            'EE_DDPG': EE_DDPG,
+            'EE_RAND': EE_RAND,
+            'data_rate_1' :data_rate_1',
+            'data_rate_4' :data_rate_4',
+            'data_rate_7' :data_rate_7',
+            'data_rate_10' :data_rate_10,
+            'ALL_DATARATES' : ALL_DATARATES,
+            'POWER_DDPG': POWER_DDPG,
+            'POWER_RAND': POWER_RAND,
+        })
+
+# Simpan ke Excel
+        df.to_excel(f'result_training_{BrifEnvName[opt.EnvIdex]}.xlsx', index=False)
         print(EE_DDPG)
         print(EE_RAND)
         print("The end")
+
 
 #%load_ext tensorboard
 #%tensorboard --logdir runs
