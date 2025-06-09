@@ -22,7 +22,7 @@ parser.add_argument('--ModelIdex', type=int, default=100, help='which model to l
 parser.add_argument('--seed', type=int, default=0, help='random seed')
 parser.add_argument('--Max_train_steps', type=int, default = 30000, help='Max training steps') #aslinya 5e6
 parser.add_argument('--save_interval', type=int, default=2500, help='Model saving interval, in steps.') #aslinya 1e5
-parser.add_argument('--eval_interval', type=int, default=1000, help='Model evaluating interval, in steps.') #aslinya 2e3
+parser.add_argument('--eval_interval', type=int, default=500, help='Model evaluating interval, in steps.') #aslinya 2e3
 
 parser.add_argument('--gamma', type=float, default=0.99, help='Discounted Factor')
 parser.add_argument('--net_width', type=int, default=1024, help='Hidden net width, s_dim-400-300-a_dim')
@@ -163,10 +163,10 @@ def main():
                     state_eval,inf=eval_env.reset(channel_gain)
                     state_eval = np.array(state_eval, dtype=np.float32)
                     result = evaluate_policy(channel_gain,state_eval,eval_env, agent, turns=1)
-                    writer.add_scalar('ep_r', result['avg_score'], global_step=total_steps)
+                    writer.add_scalar('reward training', result['avg_score'], global_step=total_steps)
                     if total_steps == opt.Max_train_steps:
                         st=0
-                        for i in range(200):
+                        for i in range(3000):
                             loc_eval= env.generate_positions() #lokasi untuk s_t
                             channel_gain_eval=env.generate_channel_gain(loc_eval) #channel gain untuk s_t
                             state_eval,inf=eval_env.reset(channel_gain_eval)
@@ -321,6 +321,25 @@ def main():
         if opt.write:
             writer.add_figure('CDF Data Rate Sistem', fig5, global_step=st)
             plt.close(fig5)
+                # Buat dataframe
+        df = pd.DataFrame({
+            'EE_DDPG': EE_DDPG,
+            'EE_RAND': EE_RAND,
+            'data_rate_1' :data_rate_1,
+            'data_rate_4' :data_rate_4,
+            'data_rate_7' :data_rate_7,
+            'data_rate_10' :data_rate_10,
+            #'ALL_DATARATES' : ALL_DATARATES,
+            'POWER_DDPG': POWER_DDPG,
+            'POWER_RAND': POWER_RAND,
+        })
+        df1 = pd.DataFrame({
+            'ALL_DATARATES' : ALL_DATARATES,
+        })
+
+# Simpan ke Excel
+        df.to_excel(f'energi_efisiensi.xlsx', index=False)
+        df1.to_excel(f'all_data_rate.xlsx', index=False)
         print(EE_DDPG)
         print(EE_RAND)
         print("The end")
