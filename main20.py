@@ -66,6 +66,13 @@ def main():
     POWER_RAND = []
     ALL_DATARATES_NODES = [[] for _ in range(env.nodes)]  # List terpisah untuk setiap node
     ALL_DATARATES =[]
+    data_rate_1 =[]
+    data_rate_4 =[]
+    data_rate_7 =[]
+    data_rate_10 =[]
+    data_rate_14 =[]
+    data_rate_17 =[]
+    data_rate_20 =[]
     
     
     # Seed Everything
@@ -173,6 +180,13 @@ def main():
                             state_eval,inf=eval_env.reset(channel_gain_eval)
                             state_eval = np.array(state_eval, dtype=np.float32)
                             result1 = evaluate_policy(channel_gain_eval,state_eval,eval_env, agent, turns=1)
+                            data_rate_1.append(result1['data_rate_1'])
+                            data_rate_4.append(result1['data_rate_4'])
+                            data_rate_7.append(result1['data_rate_7'])
+                            data_rate_10.append(result1['data_rate_10'])
+                            data_rate_14.append(result1['data_rate_4'])
+                            data_rate_17.append(result1['data_rate_7'])
+                            data_rate_20.append(result1['data_rate_10'])
                             for node_id in range(1, env.nodes+1):
                                 ALL_DATARATES_NODES[node_id - 1].append(result1[f'data_rate_{node_id}'])
                                 ALL_DATARATES.append(result1[f'data_rate_{node_id}'])
