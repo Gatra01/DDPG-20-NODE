@@ -185,24 +185,25 @@ def main():
                             channel_gain_eval=env.generate_channel_gain(loc_eval) #channel gain untuk s_t
                                 # Simpan posisi dengan indeks i
                            # Simpan jarak antar node
-                            for row in range(loc_eval.shape[0]):
-                                for col in range(loc_eval.shape[1]):
-                                    all_locations.append({
-                                        'sample_id': i,
-                                        'controller_node': row,
-                                        'sensor_node': col,
-                                        'distance': loc_eval[row, col]
-                                    })
-
-                        # Simpan channel gain dengan indeks i
-                            for row in range(channel_gain_eval.shape[0]):
-                                for col in range(channel_gain_eval.shape[1]):
-                                    all_channel_gains.append({
-                                    'sample_id': i,
-                                    'tx_node': row,
-                                    'rx_node': col,
-                                    'gain': channel_gain_eval[row, col]
-                                    })
+                            if i%1000==0:
+                                    for row in range(loc_eval.shape[0]):
+                                        for col in range(loc_eval.shape[1]):
+                                            all_locations.append({
+                                                'sample_id': i,
+                                                'controller_node': row,
+                                                'sensor_node': col,
+                                                'distance': loc_eval[row, col]
+                                            })
+        
+                                # Simpan channel gain dengan indeks i
+                                    for row in range(channel_gain_eval.shape[0]):
+                                        for col in range(channel_gain_eval.shape[1]):
+                                            all_channel_gains.append({
+                                            'sample_id': i,
+                                            'tx_node': row,
+                                            'rx_node': col,
+                                            'gain': channel_gain_eval[row, col]
+                                            })
                             state_eval,inf=eval_env.reset(channel_gain_eval)
                             state_eval = np.array(state_eval, dtype=np.float32)
                             result1 = evaluate_policy(channel_gain_eval,state_eval,eval_env, agent, turns=1)
