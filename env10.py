@@ -145,19 +145,18 @@ class GameState:
 
         # Simpan posisi [controller, sensor] ke self.positions untuk dipakai jika perlu
         return cdist(gwLoc, dvLoc)
-    def compute_channel_gain(self, dist, f=2.4e9, r=3.5, lambda_shadow=2.0):
-    """
-    Hitung channel gain h_mn sesuai Eq. (4) dengan lognormal shadowing dan Rayleigh fading.
+    def generate_channel_gain(self, dist, f=6e9, r=3.5, lambda_shadow=2.0):
+    
+    #Hitung channel gain h_mn sesuai Eq. (4) dengan lognormal shadowing dan Rayleigh fading.
 
-    Args:
-        dist: matriks [N x N] jarak antar node
-        f: frekuensi carrier dalam Hz (default: 2.4GHz)
-        r: path loss exponent (default: 3.5)
-        lambda_shadow: standar deviasi shadowing lognormal (default: 2 dB)
+    #Args:
+    #    dist: matriks [N x N] jarak antar node
+    #    f: frekuensi carrier dalam Hz (default: 2.4GHz)
+    #    r: path loss exponent (default: 3.5)
+    #    lambda_shadow: standar deviasi shadowing lognormal (default: 2 dB)
 
-    Returns:
-        channel_gain: matriks [N x N]
-    """
+    #Returns:
+    #    channel_gain: matriks [N x N]
         N = dist.shape[0]
         c = 3e8  # speed of light in m/s
         coeff = (c**2) / (4 * np.pi * f)**2
