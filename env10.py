@@ -99,27 +99,94 @@ class GameState:
         x_max = np.max(x_log)
         return (x_log - x_min) / (x_max - x_min + 1e-10) 
 
-    def generate_positions(self):
-        """Generate random positions for all nodes in 2D space (meter)"""
-        loc = np.random.uniform(0, self.area_size[0], size=(self.nodes, self.nodes))
-        for i in range (self.nodes) :
-            for j in range (self.nodes):
-              current = loc[i][j]
-              loc[j][i]=current
-        return loc
-    def generate_channel_gain(self, positions):
-        channel_gain = np.zeros((self.nodes, self.nodes))
-        for i in range(self.nodes):
-            for j in range(self.nodes):
-                if i != j:
-                    distance = np.linalg.norm(self.positions[i] - self.positions[j]) + 1e-6  # avoid zero
-                    path_loss_dB = 128.1 + 37.6 * np.log10(distance / 1000)  # example log-distance PL
-                    path_loss_linear = 10 ** (-path_loss_dB / 10)
-                    rayleigh = np.random.rayleigh(scale=1)
-                    channel_gain[i][j] = path_loss_linear * rayleigh
-                else:
-                    channel_gain[i][j] = np.random.rayleigh(scale=1)
+    #def generate_positions(self):
+    #    """Generate random positions for all nodes in 2D space (meter)"""
+    #    loc = np.random.uniform(0, self.area_size[0], size=(self.nodes, self.nodes))
+    #    for i in range (self.nodes) :
+    #        for j in range (self.nodes):
+    #          current = loc[i][j]
+    #          loc[j][i]=current
+    #    return loc
+    
+    def generate_positions(self, minDistance=2, subnet_radius=2, minD=0.5):
+        rng = np.random.default_rng()
+        bound = self.area_size[0] - 2 * subnet_radius
+
+        X = np.zeros((self.nodes, 1), dtype=np.float64)
+        Y = np.zeros((self.nodes, 1), dtype=np.float64)
+        dist_2 = minDistance ** 2
+        loop_terminate = 1
+        nValid = 0
+
+        while nValid < self.nodes and loop_terminate < 1e6:
+            newX = bound * (rng.uniform() - 0.5)
+            newY = bound * (rng.uniform() - 0.5)
+            if all(np.greater(((X[0:nValid] - newX)**2 + (Y[0:nValid] - newY)**2), dist_2)):
+                X[nValid] = newX
+                Y[nValid] = newY
+                nValid += 1
+            loop_terminate += 1
+
+        if nValid < self.nodes:
+            print("Gagal menghasilkan semua controller dengan minDistance")
+            return None
+
+        # Geser ke koordinat positif di dalam area
+        X = X + self.area_size[0] / 2
+        Y = Y + self.area_size[0] / 2
+        gwLoc = np.concatenate((X, Y), axis=1)
+
+        # Buat posisi sensor di sekitar controllernya
+        dist_rand = rng.uniform(low=minD, high=subnet_radius, size=(self.nodes, 1))
+        angN = rng.uniform(low=0, high=2 * np.pi, size=(self.nodes, 1))
+        D_XLoc = X + dist_rand * np.cos(angN)
+        D_YLoc = Y + dist_rand * np.sin(angN)
+        dvLoc = np.concatenate((D_XLoc, D_YLoc), axis=1)
+
+        # Simpan posisi [controller, sensor] ke self.positions untuk dipakai jika perlu
+        return cdist(gwLoc, dvLoc)
+    def compute_channel_gain(self, dist, f=2.4e9, r=3.5, lambda_shadow=2.0):
+    """
+    Hitung channel gain h_mn sesuai Eq. (4) dengan lognormal shadowing dan Rayleigh fading.
+
+    Args:
+        dist: matriks [N x N] jarak antar node
+        f: frekuensi carrier dalam Hz (default: 2.4GHz)
+        r: path loss exponent (default: 3.5)
+        lambda_shadow: standar deviasi shadowing lognormal (default: 2 dB)
+
+    Returns:
+        channel_gain: matriks [N x N]
+    """
+        N = dist.shape[0]
+        c = 3e8  # speed of light in m/s
+        coeff = (c**2) / (4 * np.pi * f)**2
+
+    # Shadowing kappa ~ LogNormal(0, lambda^2)
+        log_kappa = np.random.normal(loc=0.0, scale=lambda_shadow, size=(N, N))
+        kappa = np.exp(log_kappa)
+
+    # Fading zeta ~ CN(0, 1) ⇒ Rayleigh
+        real = np.random.normal(0, 1, size=(N, N))
+        imag = np.random.normal(0, 1, size=(N, N))
+        zeta = real + 1j * imag
+
+    # Channel gain h_mn
+        channel_gain = coeff * kappa * (np.abs(zeta)**2) / (dist ** r)
         return channel_gain
+    #def generate_channel_gain(self, positions):
+    #    channel_gain = np.zeros((self.nodes, self.nodes))
+    #    for i in range(self.nodes):
+    #        for j in range(self.nodes):
+    #            if i != j:
+    #                distance = np.linalg.norm(self.positions[i] - self.positions[j]) + 1e-6  # avoid zero
+    #                path_loss_dB = 128.1 + 37.6 * np.log10(distance / 1000)  # example log-distance PL
+    #                path_loss_linear = 10 ** (-path_loss_dB / 10)
+    #                rayleigh = np.random.rayleigh(scale=1)
+    #                channel_gain[i][j] = path_loss_linear * rayleigh
+    #            else:
+    #                channel_gain[i][j] = np.random.rayleigh(scale=1)
+    #    return channel_gain
     def interferensi(self, power,channel_gain):
         interferensi = np.zeros((self.nodes, self.nodes))
         for i in range(self.nodes):
