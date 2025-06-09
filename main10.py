@@ -170,7 +170,7 @@ def main():
                     writer.add_scalar('reward_training', result['avg_score'], global_step=total_steps)
                     if total_steps == opt.Max_train_steps:
                         st=0
-                        for i in range(200):
+                        for i in range(3000):
                             loc_eval= env.generate_positions() #lokasi untuk s_t
                             channel_gain_eval=env.generate_channel_gain(loc_eval) #channel gain untuk s_t
                             state_eval,inf=eval_env.reset(channel_gain_eval)
