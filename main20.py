@@ -184,9 +184,9 @@ def main():
                             data_rate_4.append(result1['data_rate_4'])
                             data_rate_7.append(result1['data_rate_7'])
                             data_rate_10.append(result1['data_rate_10'])
-                            data_rate_14.append(result1['data_rate_4'])
-                            data_rate_17.append(result1['data_rate_7'])
-                            data_rate_20.append(result1['data_rate_10'])
+                            data_rate_14.append(result1['data_rate_14'])
+                            data_rate_17.append(result1['data_rate_17'])
+                            data_rate_20.append(result1['data_rate_20'])
                             for node_id in range(1, env.nodes+1):
                                 ALL_DATARATES_NODES[node_id - 1].append(result1[f'data_rate_{node_id}'])
                                 ALL_DATARATES.append(result1[f'data_rate_{node_id}'])
@@ -344,6 +344,9 @@ def main():
             'data_rate_4' :data_rate_4,
             'data_rate_7' :data_rate_7,
             'data_rate_10' :data_rate_10,
+            'data_rate_14' :data_rate_14,
+            'data_rate_17' :data_rate_17,
+            'data_rate_20' :data_rate_20,
             #'ALL_DATARATES' : ALL_DATARATES,
             'POWER_DDPG': POWER_DDPG,
             'POWER_RAND': POWER_RAND,
