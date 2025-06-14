@@ -146,7 +146,7 @@ class GameState:
 
         # Simpan posisi [controller, sensor] ke self.positions untuk dipakai jika perlu
         return cdist(gwLoc, dvLoc)
-    def generate_channel_gain(self, dist, f=6e9, r=3.5, lambda_shadow=2.0):
+    #def generate_channel_gain(self, dist, f=6e9, r=3.5, lambda_shadow=2.0):
     
     #Hitung channel gain h_mn sesuai Eq. (4) dengan lognormal shadowing dan Rayleigh fading.
 
@@ -158,35 +158,35 @@ class GameState:
 
     #Returns:
     #    channel_gain: matriks [N x N]
-        N = dist.shape[0]
-        c = 3e8  # speed of light in m/s
-        coeff = (c**2) / (4 * np.pi * f)**2
+    #    N = dist.shape[0]
+    #    c = 3e8  # speed of light in m/s
+    #    coeff = (c**2) / (4 * np.pi * f)**2
 
     # Shadowing kappa ~ LogNormal(0, lambda^2)
-        log_kappa = np.random.normal(loc=0.0, scale=lambda_shadow, size=(N, N))
-        kappa = np.exp(log_kappa)
+    #    log_kappa = np.random.normal(loc=0.0, scale=lambda_shadow, size=(N, N))
+    #    kappa = np.exp(log_kappa)
 
     # Fading zeta ~ CN(0, 1) ⇒ Rayleigh
-        real = np.random.normal(0, 1, size=(N, N))
-        imag = np.random.normal(0, 1, size=(N, N))
-        zeta = real + 1j * imag
+    #    real = np.random.normal(0, 1, size=(N, N))
+    #    imag = np.random.normal(0, 1, size=(N, N))
+    #    zeta = real + 1j * imag
 
     # Channel gain h_mn
-        channel_gain = coeff * kappa * (np.abs(zeta)**2) / (dist ** r)
-        return channel_gain
-    #def generate_channel_gain(self, distance):
-    #    channel_gain = np.zeros((self.nodes, self.nodes))
-    #    for i in range(self.nodes):
-    #        for j in range(self.nodes):
-    #            if i != j:
-    #                #distance = np.linalg.norm(self.positions[i] - self.positions[j]) + 1e-6  # avoid zero
-    #                path_loss_dB = 128.1 + 37.6 * np.log10(distance[i][j] / 1000)  # example log-distance PL
-    #                path_loss_linear = 10 ** (-path_loss_dB / 10)
-    #                rayleigh = np.random.rayleigh(scale=1)
-    #                channel_gain[i][j] = path_loss_linear * rayleigh
-    #            else:
-    #                channel_gain[i][j] = np.random.rayleigh(scale=1)
+    #    channel_gain = coeff * kappa * (np.abs(zeta)**2) / (dist ** r)
     #    return channel_gain
+    def generate_channel_gain(self, distance):
+        channel_gain = np.zeros((self.nodes, self.nodes))
+        for i in range(self.nodes):
+            for j in range(self.nodes):
+                if i != j:
+                    #distance = np.linalg.norm(self.positions[i] - self.positions[j]) + 1e-6  # avoid zero
+                    path_loss_dB = 128.1 + 37.6 * np.log10(distance[i][j] / 1000)  # example log-distance PL
+                    path_loss_linear = 10 ** (-path_loss_dB / 10)
+                    rayleigh = np.random.rayleigh(scale=1)
+                    channel_gain[i][j] = path_loss_linear * rayleigh
+                else:
+                    channel_gain[i][j] = np.random.rayleigh(scale=1)
+        return channel_gain
     def interferensi(self, power,channel_gain):
         interferensi = np.zeros((self.nodes, self.nodes))
         for i in range(self.nodes):
