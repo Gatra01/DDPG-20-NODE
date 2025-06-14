@@ -146,7 +146,7 @@ class GameState:
 
         # Simpan posisi [controller, sensor] ke self.positions untuk dipakai jika perlu
         return cdist(gwLoc, dvLoc)
-    def generate_channel_gain(dist, sigma_shadow_dB=2.0, frek = 6):
+    def generate_channel_gain(self,dist, sigma_shadow_dB=2.0, frek = 6):
         N = self.nodes
         H = np.zeros((N, N))
 
