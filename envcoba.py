@@ -152,15 +152,15 @@ class GameState:
 
         for i in range(N):
             for j in range(N):
-                if i != j :
-                    PL_dB =  32.4  + 17.3* np.log10(dist[i, j])+20*np.log10(frek) #frek in GHz
+                #if i != j :
+                    PL_dB =  32.4  + 17.3* np.log10(dist[i, j]/1000)+20*np.log10(frek) #frek in GHz
                     shadowing_dB = np.random.normal(0, sigma_shadow_dB)
                     total_loss_dB = PL_dB + shadowing_dB
 
                     rayleigh_fading = np.abs(np.random.rayleigh(scale=1.0)) ** 2
                     H[i, j] = 10 ** (-total_loss_dB / 10) * rayleigh_fading
-                else :
-                    H[i, j] = np.abs(np.random.rayleigh(scale=1.0)) ** 2
+                #else :
+                #    H[i, j] = np.abs(np.random.rayleigh(scale=1.0)) ** 2
 
 
                     
