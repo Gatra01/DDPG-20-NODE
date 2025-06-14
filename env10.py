@@ -178,14 +178,14 @@ class GameState:
         channel_gain = np.zeros((self.nodes, self.nodes))
         for i in range(self.nodes):
             for j in range(self.nodes):
-                if i != j:
+                #if i != j:
                     #distance = np.linalg.norm(self.positions[i] - self.positions[j]) + 1e-6  # avoid zero
                     path_loss_dB = 128.1 + 37.6 * np.log10(distance[i][j] / 1000)  # example log-distance PL
                     path_loss_linear = 10 ** (-path_loss_dB / 10)
                     rayleigh = np.random.rayleigh(scale=1)
                     channel_gain[i][j] = path_loss_linear * rayleigh
-                else:
-                    channel_gain[i][j] = np.random.rayleigh(scale=1)
+                #else:
+                #    channel_gain[i][j] = np.random.rayleigh(scale=1)
         return channel_gain
     def interferensi(self, power,channel_gain):
         interferensi = np.zeros((self.nodes, self.nodes))
