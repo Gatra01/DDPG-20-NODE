@@ -250,7 +250,7 @@ def main():
         ax.set_title('CDF Energi Efisiensi')
         ax.legend()
         ax.grid(True)
-
+        fig.savefig("cdf_energy_efficiency.png", dpi=300)
         #     log figure
         if opt.write :
             writer.add_figure('CDF Energi Efisiensi', fig, global_step=st)
@@ -279,6 +279,7 @@ def main():
         ax2.set_title('CDF POWER')
         ax2.legend()
         ax2.grid(True)
+        fig3.savefig("cdf_power.png", dpi=300)
 
         if opt.write:
             writer.add_figure('CDF Power', fig3, global_step=st)
@@ -299,6 +300,7 @@ def main():
         ax4.legend(bbox_to_anchor=(1.05, 1), loc='upper left', fontsize='small', ncol=2)
         ax4.grid(True)
         plt.tight_layout()
+        fig4.savefig("cdf_node_rate.png", dpi=300)
 
         if opt.write:
             writer.add_figure('CDF Data Rate per Node', fig4, global_step=st)
@@ -318,7 +320,7 @@ def main():
         ax5.set_title('CDF of Data Rate (All Nodes)')
         ax5.legend()
         ax5.grid(True)
-
+        fig5.savefig("cdf_sistem_rate.png", dpi=300)
         if opt.write:
             writer.add_figure('CDF Data Rate Sistem', fig5, global_step=st)
             plt.close(fig5)
