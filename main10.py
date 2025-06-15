@@ -66,6 +66,7 @@ def main():
     POWER_RAND = []
     ALL_DATARATES_NODES = [[] for _ in range(env.nodes)]  # List terpisah untuk setiap node
     ALL_DATARATES=[]
+    ALL_DATARATES_RAND=[]
     data_rate_1 =[]
     data_rate_4 =[]
     data_rate_7 =[]
@@ -183,6 +184,7 @@ def main():
                             for node_id in range(1, env.nodes+1):
                                 ALL_DATARATES_NODES[node_id - 1].append(result1[f'data_rate_{node_id}'])
                                 ALL_DATARATES.append(result1[f'data_rate_{node_id}'])
+                                ALL_DATARATES_RAND.append(result1[f'data_rate_rand{node_id}'])
                             print(result1['avg_EE'])
                             print(result1['avg_EE_rand'])
                             EE_DDPG.append(result1['avg_EE'])
@@ -245,6 +247,20 @@ def main():
         fig, ax = plt.subplots()
         ax.plot(x_ddpg, y_ddpg, label='DDPG')
         ax.plot(x_rand, y_rand, label='Random')
+
+        # Tambahan: panah horizontal untuk selisih di CDF = 0.5
+        cdf_level = 0.5
+        x1 = np.interp(cdf_level, y_ddpg, x_ddpg)
+        x2 = np.interp(cdf_level, y_rand, x_rand)
+        gap_percent = 100 * (x1 - x2) / x2
+
+        ax.annotate(f"{gap_percent:.0f}%",
+                    xy=((x1 + x2) / 2, cdf_level),
+                    xytext=(x2, cdf_level + 0.05),
+                    arrowprops=dict(arrowstyle='<->', color='black'),
+                    ha='center', fontsize=11)
+        ax.axhline(cdf_level, color='gray', linestyle=':', linewidth=1)
+
         ax.set_xlabel('Energi Efisiensi')
         ax.set_ylabel('CDF')
         ax.set_title('CDF Energi Efisiensi')
@@ -274,11 +290,11 @@ def main():
         fig3, ax3 = plt.subplots()
         ax3.plot(x_p, y_p, label='Power DDPG')
         ax3.plot(x_p_rand, y_p_rand, label='Power Random')
-        ax2.set_xlabel('Power')
-        ax2.set_ylabel('CDF')
-        ax2.set_title('CDF POWER')
-        ax2.legend()
-        ax2.grid(True)
+        ax3.set_xlabel('Power')
+        ax3.set_ylabel('CDF')
+        ax3.set_title('CDF POWER')
+        ax3.legend()
+        ax3.grid(True)
         fig3.savefig("cdf_power.png", dpi=300)
 
         if opt.write:
@@ -307,13 +323,27 @@ def main():
             plt.close(fig4)
         # 5) Plot CDF Data Rate sistem
         x_dr, y_dr = compute_cdf(ALL_DATARATES)
-
+        x_dr_rand, y_dr_rand = compute_cdf(ALL_DATARATES_RAND)
         fig5, ax5 = plt.subplots()
-        ax5.plot(x_dr, y_dr, label='Data Rate All Nodes')
+        ax5.plot(x_dr, y_dr, label='DDPG (All Nodes)')
+        ax5.plot(x_dr_rand, y_dr_rand, label='Random (All Nodes)', linestyle='--')
 
         # Tambahkan garis vertikal R_min
-        R_min = 0.152  # Ganti nilai ini sesuai dengan threshold R_min kamu
+        R_min = 0.152  # Ganti sesuai kebutuhan
         ax5.axvline(R_min, color='red', linestyle='--', label=f'R_min = {R_min}')
+
+        # Tambahkan panah horizontal untuk menunjukkan gap di CDF 0.5
+        cdf_level = 0.5
+        x_ddpg_val = np.interp(cdf_level, y_dr, x_dr)
+        x_rand_val = np.interp(cdf_level, y_dr_rand, x_dr_rand)
+        gap_percent = 100 * (x_ddpg_val - x_rand_val) / x_rand_val
+
+        ax5.annotate(f"{gap_percent:.0f}%",
+                     xy=((x_ddpg_val + x_rand_val)/2, cdf_level),
+                     xytext=(x_rand_val, cdf_level + 0.05),
+                     arrowprops=dict(arrowstyle='<->', color='black'),
+                     ha='center', fontsize=11)
+        ax5.axhline(cdf_level, color='gray', linestyle=':', linewidth=1)
 
         ax5.set_xlabel('Data Rate')
         ax5.set_ylabel('CDF')
@@ -321,10 +351,10 @@ def main():
         ax5.legend()
         ax5.grid(True)
         fig5.savefig("cdf_sistem_rate.png", dpi=300)
+
         if opt.write:
             writer.add_figure('CDF Data Rate Sistem', fig5, global_step=st)
             plt.close(fig5)
-        
 
         # Buat dataframe
         df = pd.DataFrame({
@@ -340,6 +370,7 @@ def main():
         })
         df1 = pd.DataFrame({
             'ALL_DATARATES' : ALL_DATARATES,
+            'ALL_DATARATES_RANDOM' : ALL_DATARATES_RAND,
         })
 
 # Simpan ke Excel
