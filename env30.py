@@ -169,7 +169,7 @@ class GameState:
     #            else:
     #                channel_gain[i][j] = np.random.rayleigh(scale=1)
     #    return channel_gain
-    def generate_channel_gain(self,dist, sigma_shadow_dB=2.0, frek = 6):
+    def generate_channel_gain(self,dist, sigma_shadow_dB=7.0, frek = 6):
         N = self.nodes
         H = np.zeros((N, N))
 
