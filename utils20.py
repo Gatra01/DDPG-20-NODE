@@ -76,6 +76,26 @@ def evaluate_policy(channel_gain, state, env, agent, turns=1):
     total_EE_rand=0
     total_power = 0
     total_power_rand=0
+    dr_rand1=0
+    dr_rand2=0
+    dr_rand3=0
+    dr_rand4=0
+    dr_rand5=0
+    dr_rand6=0
+    dr_rand7=0
+    dr_rand8=0
+    dr_rand9=0
+    dr_rand10=0
+    dr_rand11=0
+    dr_rand12=0
+    dr_rand13=0
+    dr_rand14=0
+    dr_rand15=0
+    dr_rand16=0
+    dr_rand17=0
+    dr_rand18=0
+    dr_rand19=0
+    dr_rand20=0
     dr1=0
     dr2=0
     dr3=0
@@ -96,16 +116,6 @@ def evaluate_policy(channel_gain, state, env, agent, turns=1):
     dr18=0
     dr19=0
     dr20=0
-  #  dr21=0
-  #  dr22=0
-  #  dr23=0
-  #  dr24=0
-  #  dr25=0
-  #  dr26=0
-  #  dr27=0
-  #  dr28=0
-  #  dr29=0
-  #  dr30=0
     # threshold constraint (contoh)
     R_th = 0.074      # minimal data rate per UE [bit/s atau satuan yg kamu pakai]
     P_th = 5  # maksimal total power [W atau satuan yg kamu pakai]
@@ -170,19 +180,26 @@ def evaluate_policy(channel_gain, state, env, agent, turns=1):
             dr18+=info['data_rate18']
             dr19+=info['data_rate19']
             dr20+=info['data_rate20']
-   #         dr21+=info['data_rate21']
-   #         dr22+=info['data_rate22']
-   #         dr23+=info['data_rate23']
-   #         dr24+=info['data_rate24']
-   #         dr25+=info['data_rate25']
-   #         dr26+=info['data_rate26']
-   #         dr27+=info['data_rate27']
-   #         dr28+=info['data_rate28']
-   #         dr29+=info['data_rate29']
-   #         dr30+=info['data_rate30']
-            
-            
-
+            dr_rand1+=info1['data_rate1']
+            dr_rand2+=info1['data_rate2']
+            dr_rand3+=info1['data_rate3']
+            dr_rand4+=info1['data_rate4']
+            dr_rand5+=info1['data_rate5']
+            dr_rand6+=info1['data_rate6']
+            dr_rand7+=info1['data_rate7']
+            dr_rand8+=info1['data_rate8']
+            dr_rand9+=info1['data_rate9']
+            dr_rand10+=info1['data_rate10']
+            dr_rand11+=info1['data_rate11']
+            dr_rand12+=info1['data_rate12']
+            dr_rand13+=info1['data_rate13']
+            dr_rand14+=info1['data_rate14']
+            dr_rand15+=info1['data_rate15']
+            dr_rand16+=info1['data_rate16']
+            dr_rand17+=info1['data_rate17']
+            dr_rand18+=info1['data_rate18']
+            dr_rand19+=info1['data_rate19']
+            dr_rand20+=info1['data_rate20']
             # cek constraint data rate: pastikan semua UE ≥ R_th untuk ddpg
             data_rates = [
                 info['data_rate1'],
@@ -205,16 +222,6 @@ def evaluate_policy(channel_gain, state, env, agent, turns=1):
                 info['data_rate18'],
                 info['data_rate19'],
                 info['data_rate20'],
-    #            info['data_rate21'],
-    #            info['data_rate22'],
-    #            info['data_rate23'],
-    #            info['data_rate24'],
-    #            info['data_rate25'],
-    #            info['data_rate26'],
-    #            info['data_rate27'],
-    #            info['data_rate28'],
-    #            info['data_rate29'],
-    #            info['data_rate30'],
             ]
             if all(dr >= R_th for dr in data_rates):
                 count_data_ok += 1
@@ -241,16 +248,6 @@ def evaluate_policy(channel_gain, state, env, agent, turns=1):
                 info1['data_rate18'],
                 info1['data_rate19'],
                 info1['data_rate20'],
-     #           info1['data_rate21'],
-     #           info1['data_rate22'],
-     #           info1['data_rate23'],
-     #           info1['data_rate24'],
-     #           info1['data_rate25'],
-     #           info1['data_rate26'],
-     #           info1['data_rate27'],
-     #           info1['data_rate28'],
-     #           info1['data_rate29'],
-     #           info1['data_rate30'],
             ]
             if all(dr >= R_th for dr in data_rates1):
                 count_data_ok_rand += 1
@@ -329,16 +326,27 @@ def evaluate_policy(channel_gain, state, env, agent, turns=1):
         'data_rate_18': dr18,
         'data_rate_19': dr19,
         'data_rate_20': dr20,
-      #  'data_rate_21': dr21,
-      #  'data_rate_22': dr22,
-      #  'data_rate_23': dr23,
-      #  'data_rate_24': dr24,
-      #  'data_rate_25': dr25,
-      #  'data_rate_26': dr26,
-      #  'data_rate_27': dr27,
-      #  'data_rate_28': dr28,
-      #  'data_rate_29': dr29,
-      #  'data_rate_30': dr30,
+        'data_rate_rand1': dr_rand1,
+        'data_rate_rand2': dr_rand2,
+        'data_rate_rand3': dr_rand3,
+        'data_rate_rand4': dr_rand4,
+        'data_rate_rand5': dr_rand5,
+        'data_rate_rand6': dr_rand6,
+        'data_rate_rand7': dr_rand7,
+        'data_rate_rand8': dr_rand8,
+        'data_rate_rand9': dr_rand9,
+        'data_rate_rand10': dr_rand10,
+        'data_rate_rand11': dr_rand11,
+        'data_rate_rand12': dr_rand12,
+        'data_rate_rand13': dr_rand13,
+        'data_rate_rand14': dr_rand14,
+        'data_rate_rand15': dr_rand15,
+        'data_rate_rand16': dr_rand16,
+        'data_rate_rand17': dr_rand17,
+        'data_rate_rand18': dr_rand18,
+        'data_rate_rand19': dr_rand19,
+        'data_rate_rand20': dr_rand20,
+
         'data_rate_pass' : count, 
         'data_rate_rand_pass' : count_rand,
         #'data_rate_total' : jumlah_data_rate,
