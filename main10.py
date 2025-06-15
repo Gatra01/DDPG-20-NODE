@@ -290,7 +290,7 @@ def main():
             ax4.plot(x, y, label=f'Node {idx}')
 
         # Garis vertikal untuk R_min
-        R_min = 2.0
+        R_min = 0.152
         ax4.axvline(R_min, color='red', linestyle='--', label=f'R_min = {R_min}')
 
         ax4.set_xlabel('Data Rate')
@@ -310,7 +310,7 @@ def main():
         ax5.plot(x_dr, y_dr, label='Data Rate All Nodes')
 
         # Tambahkan garis vertikal R_min
-        R_min = 2.0  # Ganti nilai ini sesuai dengan threshold R_min kamu
+        R_min = 0.152  # Ganti nilai ini sesuai dengan threshold R_min kamu
         ax5.axvline(R_min, color='red', linestyle='--', label=f'R_min = {R_min}')
 
         ax5.set_xlabel('Data Rate')
