@@ -21,9 +21,9 @@ parser.add_argument('--Loadmodel', type=str2bool, default=False, help='Load pret
 parser.add_argument('--ModelIdex', type=int, default=100, help='which model to load')
 
 parser.add_argument('--seed', type=int, default=0, help='random seed')
-parser.add_argument('--Max_train_steps', type=int, default = 30000, help='Max training steps') #aslinya 5e6
+parser.add_argument('--Max_train_steps', type=int, default = 60000, help='Max training steps') #aslinya 5e6
 parser.add_argument('--save_interval', type=int, default=2500, help='Model saving interval, in steps.') #aslinya 1e5
-parser.add_argument('--eval_interval', type=int, default=500, help='Model evaluating interval, in steps.') #aslinya 2e3
+parser.add_argument('--eval_interval', type=int, default=2000, help='Model evaluating interval, in steps.') #aslinya 2e3
 
 parser.add_argument('--gamma', type=float, default=0.99, help='Discounted Factor')
 parser.add_argument('--net_width', type=int, default=1024, help='Hidden net width, s_dim-400-300-a_dim')
@@ -264,7 +264,7 @@ def main():
         ax.set_title('CDF Energi Efisiensi')
         ax.legend()
         ax.grid(True)
-
+        fig.savefig("cdf_energy_efficiency.png", dpi=300)
         #     log figure
         if opt.write :
             writer.add_figure('CDF Energi Efisiensi', fig, global_step=st)
@@ -293,7 +293,7 @@ def main():
         ax2.set_title('CDF POWER')
         ax2.legend()
         ax2.grid(True)
-
+        fig3.savefig("cdf_power.png", dpi=300)
         if opt.write:
             writer.add_figure('CDF Power', fig3, global_step=st)
             plt.close(fig3)
@@ -304,7 +304,7 @@ def main():
             ax4.plot(x, y, label=f'Node {idx}')
 
         # Garis vertikal untuk R_min
-        R_min = 2.0
+        R_min = 0.074
         ax4.axvline(R_min, color='red', linestyle='--', label=f'R_min = {R_min}')
 
         ax4.set_xlabel('Data Rate')
@@ -313,7 +313,7 @@ def main():
         ax4.legend(bbox_to_anchor=(1.05, 1), loc='upper left', fontsize='small', ncol=2)
         ax4.grid(True)
         plt.tight_layout()
-
+        fig4.savefig("cdf_node_rate.png", dpi=300)
         if opt.write:
             writer.add_figure('CDF Data Rate per Node', fig4, global_step=st)
             plt.close(fig4)
@@ -324,7 +324,7 @@ def main():
         ax5.plot(x_dr, y_dr, label='Data Rate All Nodes')
 
         # Tambahkan garis vertikal R_min
-        R_min = 2.0  # Ganti nilai ini sesuai dengan threshold R_min kamu
+        R_min = 0.074  # Ganti nilai ini sesuai dengan threshold R_min kamu
         ax5.axvline(R_min, color='red', linestyle='--', label=f'R_min = {R_min}')
 
         ax5.set_xlabel('Data Rate')
@@ -332,7 +332,7 @@ def main():
         ax5.set_title('CDF of Data Rate (All Nodes)')
         ax5.legend()
         ax5.grid(True)
-
+        fig5.savefig("cdf_sistem_rate.png", dpi=300)
         if opt.write:
             writer.add_figure('CDF Data Rate Sistem', fig5, global_step=st)
             plt.close(fig5)
