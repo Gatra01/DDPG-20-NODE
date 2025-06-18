@@ -13,7 +13,7 @@ class GameState:
         self.positions = self.generate_positions()
         self.observation_space = 2*nodes * nodes + nodes  # interferensi, channel gain, power
         self.action_space = nodes
-        self.p = np.random.uniform(0, 3, size=self.nodes)
+        self.p = np.random.uniform(0, 15, size=self.nodes)
     def sample_valid_power(self):
         rand = np.random.rand(self.nodes)
         rand /= np.sum(rand)
@@ -146,7 +146,7 @@ class GameState:
 
         # Simpan posisi [controller, sensor] ke self.positions untuk dipakai jika perlu
         return cdist(gwLoc, dvLoc)
-    def generate_channel_gain(self,dist, sigma_shadow_dB=2.0, frek = 6):
+    def generate_channel_gain(self,dist, sigma_shadow_dB=7.0, frek = 6):
         N = self.nodes
         H = np.zeros((N, N))
 
