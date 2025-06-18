@@ -21,7 +21,7 @@ parser.add_argument('--Loadmodel', type=str2bool, default=False, help='Load pret
 parser.add_argument('--ModelIdex', type=int, default=100, help='which model to load')
 
 parser.add_argument('--seed', type=int, default=0, help='random seed')
-parser.add_argument('--Max_train_steps', type=int, default = 60000, help='Max training steps') #aslinya 5e6
+parser.add_argument('--Max_train_steps', type=int, default = 70000, help='Max training steps') #aslinya 5e6
 parser.add_argument('--save_interval', type=int, default=2500, help='Model saving interval, in steps.') #aslinya 1e5
 parser.add_argument('--eval_interval', type=int, default=2000, help='Model evaluating interval, in steps.') #aslinya 2e3
 
@@ -30,7 +30,7 @@ parser.add_argument('--net_width', type=int, default=1024, help='Hidden net widt
 parser.add_argument('--a_lr', type=float, default=2e-3, help='Learning rate of actor') # 2e-3
 parser.add_argument('--c_lr', type=float, default=1e-3, help='Learning rate of critic') # 1e-3
 parser.add_argument('--batch_size', type=int, default=128, help='batch_size of training')
-parser.add_argument('--random_steps', type=int, default=5000, help='random steps before trianing')
+parser.add_argument('--random_steps', type=int, default=10000, help='random steps before trianing')
 parser.add_argument('--noise', type=float, default=0.1, help='exploring noise') #aslinya 0.1
 opt = parser.parse_args()
 opt.dvc = torch.device(opt.dvc) # from str to torch.device
@@ -46,8 +46,8 @@ def main():
     BrifEnvName = ['6G', 'LLdV2', 'Humanv4', 'HCv4','BWv3', 'BWHv3']
     
     # Build Env
-    env = GameState(10,3)
-    eval_env = GameState(10,3)
+    env = GameState(10,15)
+    eval_env = GameState(10,15)
     opt.state_dim = env.observation_space
     opt.action_dim = env.action_space
     opt.max_action = env.p_max   #remark: action space【-max,max】
@@ -112,6 +112,7 @@ def main():
     else:
         total_steps = 0
         lr_steps = 0
+        random = True
         while total_steps < opt.Max_train_steps: # ini loop episode. Jadi total episode adalah Max_train_steps/200
             lr_steps+=1
             if lr_steps==sepertiga_eps :
@@ -129,8 +130,12 @@ def main():
                 #print(total_steps)
                 langkah +=1
                 if total_steps <= opt.random_steps: #aslinya < aja, ide pengubahan ini tuh supaya selec action di train dulu.
-                    a = env.sample_valid_power()
-                    #a = env.p
+                    if random == True :
+                        a = env.sample_valid_power()
+                        random = False 
+                    else :  
+                        a= env.p
+                        random = True
                 else: 
                     a = agent.select_action(s, deterministic=False)
                 next_loc= env.generate_positions() #lokasi untuk s_t
