@@ -176,7 +176,7 @@ class GameState:
     # Channel gain h_mn
     #    channel_gain = coeff * kappa * (np.abs(zeta)**2) / (dist ** r)
     #    return channel_gain
-    def generate_channel_gain(self,dist, sigma_shadow_dB=2.0, frek = 6):
+    def generate_channel_gain(self,dist, sigma_shadow_dB=7.0, frek = 6):
         N = self.nodes
         H = np.zeros((N, N))
 
