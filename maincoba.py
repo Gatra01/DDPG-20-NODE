@@ -130,12 +130,12 @@ def main():
                 #print(total_steps)
                 langkah +=1
                 if total_steps <= opt.random_steps: #aslinya < aja, ide pengubahan ini tuh supaya selec action di train dulu.
-                    if random == True :
-                        a = env.sample_valid_power()
-                        random = False 
-                    else :  
+                    #if random == True :
+                    #    a = env.sample_valid_power()
+                    #    random = False 
+                    #else :  
                         a= env.p
-                        random = True
+                    #    random = True
                 else: 
                     a = agent.select_action(s, deterministic=False)
                 next_loc= env.generate_positions() #lokasi untuk s_t
