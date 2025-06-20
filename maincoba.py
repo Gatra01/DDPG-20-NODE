@@ -1,14 +1,15 @@
+
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-from envcoba import GameState
+from env10 import GameState
 from ddpg import *
 from collections import deque
 import torch.nn as nn
 import os, shutil
 import argparse
 from datetime import datetime
-from utilscoba import str2bool,evaluate_policy
+from utils10 import str2bool,evaluate_policy
 
 
 '''Hyperparameter Setting'''
@@ -21,7 +22,7 @@ parser.add_argument('--Loadmodel', type=str2bool, default=False, help='Load pret
 parser.add_argument('--ModelIdex', type=int, default=100, help='which model to load')
 
 parser.add_argument('--seed', type=int, default=0, help='random seed')
-parser.add_argument('--Max_train_steps', type=int, default = 90000, help='Max training steps') #aslinya 5e6
+parser.add_argument('--Max_train_steps', type=int, default = 60000, help='Max training steps') #aslinya 5e6
 parser.add_argument('--save_interval', type=int, default=2500, help='Model saving interval, in steps.') #aslinya 1e5
 parser.add_argument('--eval_interval', type=int, default=2000, help='Model evaluating interval, in steps.') #aslinya 2e3
 
@@ -30,7 +31,7 @@ parser.add_argument('--net_width', type=int, default=1024, help='Hidden net widt
 parser.add_argument('--a_lr', type=float, default=2e-3, help='Learning rate of actor') # 2e-3
 parser.add_argument('--c_lr', type=float, default=1e-3, help='Learning rate of critic') # 1e-3
 parser.add_argument('--batch_size', type=int, default=128, help='batch_size of training')
-parser.add_argument('--random_steps', type=int, default=24000, help='random steps before trianing')
+parser.add_argument('--random_steps', type=int, default=5000, help='random steps before trianing')
 parser.add_argument('--noise', type=float, default=0.1, help='exploring noise') #aslinya 0.1
 opt = parser.parse_args()
 opt.dvc = torch.device(opt.dvc) # from str to torch.device
@@ -66,6 +67,7 @@ def main():
     POWER_RAND = []
     ALL_DATARATES_NODES = [[] for _ in range(env.nodes)]  # List terpisah untuk setiap node
     ALL_DATARATES=[]
+    ALL_DATARATES_RAND=[]
     data_rate_1 =[]
     data_rate_4 =[]
     data_rate_7 =[]
@@ -112,7 +114,6 @@ def main():
     else:
         total_steps = 0
         lr_steps = 0
-        random = True
         while total_steps < opt.Max_train_steps: # ini loop episode. Jadi total episode adalah Max_train_steps/200
             lr_steps+=1
             if lr_steps==sepertiga_eps :
@@ -130,12 +131,8 @@ def main():
                 #print(total_steps)
                 langkah +=1
                 if total_steps <= opt.random_steps: #aslinya < aja, ide pengubahan ini tuh supaya selec action di train dulu.
-                    #if random == True :
-                    #    a = env.sample_valid_power()
-                    #    random = False 
-                    #else :  
-                        a= env.p
-                    #    random = True
+                    a = env.sample_valid_power()
+                    #a = env.p
                 else: 
                     a = agent.select_action(s, deterministic=False)
                 next_loc= env.generate_positions() #lokasi untuk s_t
@@ -188,6 +185,7 @@ def main():
                             for node_id in range(1, env.nodes+1):
                                 ALL_DATARATES_NODES[node_id - 1].append(result1[f'data_rate_{node_id}'])
                                 ALL_DATARATES.append(result1[f'data_rate_{node_id}'])
+                                ALL_DATARATES_RAND.append(result1[f'data_rate_rand{node_id}'])
                             print(result1['avg_EE'])
                             print(result1['avg_EE_rand'])
                             EE_DDPG.append(result1['avg_EE'])
@@ -250,12 +248,26 @@ def main():
         fig, ax = plt.subplots()
         ax.plot(x_ddpg, y_ddpg, label='DDPG')
         ax.plot(x_rand, y_rand, label='Random')
+
+        # Tambahan: panah horizontal untuk selisih di CDF = 0.5
+        cdf_level = 0.5
+        x1 = np.interp(cdf_level, y_ddpg, x_ddpg)
+        x2 = np.interp(cdf_level, y_rand, x_rand)
+        gap_percent = 100 * (x1 - x2) / x2
+
+        ax.annotate(f"{gap_percent:.0f}%",
+                    xy=((x1 + x2) / 2, cdf_level),
+                    xytext=(x2, cdf_level + 0.05),
+                    arrowprops=dict(arrowstyle='<->', color='black'),
+                    ha='center', fontsize=11)
+        ax.axhline(cdf_level, color='gray', linestyle=':', linewidth=1)
+
         ax.set_xlabel('Energi Efisiensi')
         ax.set_ylabel('CDF')
         ax.set_title('CDF Energi Efisiensi')
         ax.legend()
         ax.grid(True)
-
+        fig.savefig("cdf_energy_efficiency.png", dpi=300)
         #     log figure
         if opt.write :
             writer.add_figure('CDF Energi Efisiensi', fig, global_step=st)
@@ -279,11 +291,12 @@ def main():
         fig3, ax3 = plt.subplots()
         ax3.plot(x_p, y_p, label='Power DDPG')
         ax3.plot(x_p_rand, y_p_rand, label='Power Random')
-        ax2.set_xlabel('Power')
-        ax2.set_ylabel('CDF')
-        ax2.set_title('CDF POWER')
-        ax2.legend()
-        ax2.grid(True)
+        ax3.set_xlabel('Power')
+        ax3.set_ylabel('CDF')
+        ax3.set_title('CDF POWER')
+        ax3.legend()
+        ax3.grid(True)
+        fig3.savefig("cdf_power.png", dpi=300)
 
         if opt.write:
             writer.add_figure('CDF Power', fig3, global_step=st)
@@ -295,7 +308,7 @@ def main():
             ax4.plot(x, y, label=f'Node {idx}')
 
         # Garis vertikal untuk R_min
-        R_min = 2.0
+        R_min = 0.152
         ax4.axvline(R_min, color='red', linestyle='--', label=f'R_min = {R_min}')
 
         ax4.set_xlabel('Data Rate')
@@ -304,30 +317,45 @@ def main():
         ax4.legend(bbox_to_anchor=(1.05, 1), loc='upper left', fontsize='small', ncol=2)
         ax4.grid(True)
         plt.tight_layout()
+        fig4.savefig("cdf_node_rate.png", dpi=300)
 
         if opt.write:
             writer.add_figure('CDF Data Rate per Node', fig4, global_step=st)
             plt.close(fig4)
         # 5) Plot CDF Data Rate sistem
         x_dr, y_dr = compute_cdf(ALL_DATARATES)
-
+        x_dr_rand, y_dr_rand = compute_cdf(ALL_DATARATES_RAND)
         fig5, ax5 = plt.subplots()
-        ax5.plot(x_dr, y_dr, label='Data Rate All Nodes')
+        ax5.plot(x_dr, y_dr, label='DDPG (All Nodes)')
+        ax5.plot(x_dr_rand, y_dr_rand, label='Random (All Nodes)', linestyle='--')
 
         # Tambahkan garis vertikal R_min
-        R_min = 2.0  # Ganti nilai ini sesuai dengan threshold R_min kamu
+        R_min = 0.152  # Ganti sesuai kebutuhan
         ax5.axvline(R_min, color='red', linestyle='--', label=f'R_min = {R_min}')
+
+        # Tambahkan panah horizontal untuk menunjukkan gap di CDF 0.5
+        cdf_level = 0.5
+        x_ddpg_val = np.interp(cdf_level, y_dr, x_dr)
+        x_rand_val = np.interp(cdf_level, y_dr_rand, x_dr_rand)
+        gap_percent = 100 * (x_ddpg_val - x_rand_val) / x_rand_val
+
+        ax5.annotate(f"{gap_percent:.0f}%",
+                     xy=((x_ddpg_val + x_rand_val)/2, cdf_level),
+                     xytext=(x_rand_val, cdf_level + 0.05),
+                     arrowprops=dict(arrowstyle='<->', color='black'),
+                     ha='center', fontsize=11)
+        ax5.axhline(cdf_level, color='gray', linestyle=':', linewidth=1)
 
         ax5.set_xlabel('Data Rate')
         ax5.set_ylabel('CDF')
         ax5.set_title('CDF of Data Rate (All Nodes)')
         ax5.legend()
         ax5.grid(True)
+        fig5.savefig("cdf_sistem_rate.png", dpi=300)
 
         if opt.write:
             writer.add_figure('CDF Data Rate Sistem', fig5, global_step=st)
             plt.close(fig5)
-        
 
         # Buat dataframe
         df = pd.DataFrame({
@@ -343,6 +371,7 @@ def main():
         })
         df1 = pd.DataFrame({
             'ALL_DATARATES' : ALL_DATARATES,
+            'ALL_DATARATES_RANDOM' : ALL_DATARATES_RAND,
         })
 
 # Simpan ke Excel
