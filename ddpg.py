@@ -66,7 +66,7 @@ class DDPG_agent():
 		# Matikan grad pada critic
 		for p in self.q_critic.parameters():
 		    p.requires_grad_(False)
-		
+		a_loss = -self.q_critic(s, self.actor(s)).mean()
 		# Backprop dari actor loss
 		a_loss.backward()
 		
