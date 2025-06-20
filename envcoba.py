@@ -49,7 +49,7 @@ class GameState:
         data_rate=self.hitung_data_rate(sinr)
         data_rate_constraint=[]
         for i in range(self.nodes):
-            data_rate_constraint.append(5*self.step_function(0.152-data_rate[i]))
+            data_rate_constraint.append(2*self.step_function(0.152-data_rate[i]))
             #data_rate_constraint.append(20*(data_rate[i]-4))
         EE=self.hitung_efisiensi_energi(power,data_rate)
         
@@ -79,7 +79,7 @@ class GameState:
         'data_rate10': data_rate[9],
         'total_power': float(np.sum(power))
         }
-        reward = -np.sum(data_rate_constraint) + EE - 5*self.step_function(total_daya-self.p_max)
+        reward = -np.sum(data_rate_constraint) + EE - 1*self.step_function(total_daya-self.p_max)
         if reward > 0 :
             reward += 3
         obs = np.concatenate([self.norm(next_channel_gain).ravel(),self.norm(next_intr).ravel(),self.norm(power)])
