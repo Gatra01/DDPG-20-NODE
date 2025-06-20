@@ -76,6 +76,16 @@ def evaluate_policy(channel_gain, state, env, agent, turns=1):
     total_EE_rand=0
     total_power = 0
     total_power_rand=0
+    dr_rand1=0
+    dr_rand2=0
+    dr_rand3=0
+    dr_rand4=0
+    dr_rand5=0
+    dr_rand6=0
+    dr_rand7=0
+    dr_rand8=0
+    dr_rand9=0
+    dr_rand10=0
     dr1=0
     dr2=0
     dr3=0
@@ -87,8 +97,8 @@ def evaluate_policy(channel_gain, state, env, agent, turns=1):
     dr9=0
     dr10=0
     # threshold constraint (contoh)
-    R_th = 2        # minimal data rate per UE [bit/s atau satuan yg kamu pakai]
-    P_th = 5      # maksimal total power [W atau satuan yg kamu pakai]
+    R_th = 0.152      # minimal data rate per UE [bit/s atau satuan yg kamu pakai]
+    P_th = 3      # maksimal total power [W atau satuan yg kamu pakai]
 
     # Counters untuk constraint
     count_data_ok  = 0
@@ -140,6 +150,16 @@ def evaluate_policy(channel_gain, state, env, agent, turns=1):
             dr8+=info['data_rate8']
             dr9+=info['data_rate9']
             dr10+=info['data_rate10']
+            dr_rand1+=info1['data_rate1']
+            dr_rand2+=info1['data_rate2']
+            dr_rand3+=info1['data_rate3']
+            dr_rand4+=info1['data_rate4']
+            dr_rand5+=info1['data_rate5']
+            dr_rand6+=info1['data_rate6']
+            dr_rand7+=info1['data_rate7']
+            dr_rand8+=info1['data_rate8']
+            dr_rand9+=info1['data_rate9']
+            dr_rand10+=info1['data_rate10']
       
             # cek constraint data rate: pastikan semua UE ≥ R_th untuk ddpg
             data_rates = [
@@ -237,6 +257,16 @@ def evaluate_policy(channel_gain, state, env, agent, turns=1):
         'data_rate_8': dr8,
         'data_rate_9': dr9,
         'data_rate_10': dr10,
+        'data_rate_rand1': dr_rand1,
+        'data_rate_rand2': dr_rand2,
+        'data_rate_rand3': dr_rand3,
+        'data_rate_rand4': dr_rand4,
+        'data_rate_rand5': dr_rand5,
+        'data_rate_rand6': dr_rand6,
+        'data_rate_rand7': dr_rand7,
+        'data_rate_rand8': dr_rand8,
+        'data_rate_rand9': dr_rand9,
+        'data_rate_rand10': dr_rand10,
         'data_rate_pass' : count, 
         'data_rate_rand_pass' : count_rand,
         #'data_rate_total' : jumlah_data_rate,
