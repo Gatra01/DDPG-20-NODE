@@ -60,15 +60,25 @@ class DDPG_agent():
 
 		self.q_critic_optimizer.step()
 
-			# Update the Actor
-		a_loss = -self.q_critic(s, self.actor(s)).mean()
+				# Update the Actor
 		self.actor_optimizer.zero_grad()
+		
+		# Matikan grad pada critic
+		for p in self.q_critic.parameters():
+		    p.requires_grad_(False)
+		
+		# Backprop dari actor loss
 		a_loss.backward()
-
-			# Gradient clipping for actor
+		
+		# Clip grad pada actor
 		clip_grad_norm_(self.actor.parameters(), max_norm=1.0)
-
+		
+		# Update actor
 		self.actor_optimizer.step()
+		
+		# Hidupkan lagi grad pada critic
+		for p in self.q_critic.parameters():
+		    p.requires_grad_(True)
 
 		# Update the frozen target models
 		with torch.no_grad():
