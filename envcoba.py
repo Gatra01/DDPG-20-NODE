@@ -13,7 +13,7 @@ class GameState:
         self.positions = self.generate_positions()
         self.observation_space = 2*nodes * nodes + nodes  # interferensi, channel gain, power
         self.action_space = nodes
-        self.p = np.random.uniform(0, 15, size=self.nodes)
+        self.p = np.random.uniform(0, 3, size=self.nodes)
     def sample_valid_power(self):
         rand = np.random.rand(self.nodes)
         rand /= np.sum(rand)
@@ -77,20 +77,11 @@ class GameState:
         'data_rate8': data_rate[7],
         'data_rate9': data_rate[8],
         'data_rate10': data_rate[9],
-        #'data_rate21': data_rate[20],
-        #'data_rate22': data_rate[21],
-        #'data_rate23': data_rate[22],
-        #'data_rate24': data_rate[23],
-        #'data_rate25': data_rate[24],
-        #'data_rate26': data_rate[25],
-        #'data_rate27': data_rate[26],
-        #'data_rate28': data_rate[27],
-        #'data_rate29': data_rate[28],
-        #'data_rate30': data_rate[29],
         'total_power': float(np.sum(power))
         }
-
         reward = -np.sum(data_rate_constraint) + EE - 5*self.step_function(total_daya-self.p_max)
+        if reward > 0 :
+            reward += 3
         obs = np.concatenate([self.norm(next_channel_gain).ravel(),self.norm(next_intr).ravel(),self.norm(power)])
         return obs.astype(np.float32), float(reward), dw,False, info
     def norm(self,x):
@@ -99,15 +90,6 @@ class GameState:
         x_min = np.min(x_log)
         x_max = np.max(x_log)
         return (x_log - x_min) / (x_max - x_min + 1e-10) 
-
-    #def generate_positions(self):
-    #    """Generate random positions for all nodes in 2D space (meter)"""
-    #    loc = np.random.uniform(0, self.area_size[0], size=(self.nodes, self.nodes))
-    #    for i in range (self.nodes) :
-    #        for j in range (self.nodes):
-    #          current = loc[i][j]
-    #          loc[j][i]=current
-    #    return loc
     
     def generate_positions(self, minDistance=2, subnet_radius=2, minD=0.5):
         rng = np.random.default_rng()
@@ -152,20 +134,16 @@ class GameState:
 
         for i in range(N):
             for j in range(N):
-                if i != j :
+                #if i != j :
                     PL_dB =  32.4  + 17.3* np.log10(dist[i, j]/1000)+20*np.log10(frek) #frek in GHz
                     shadowing_dB = np.random.normal(0, sigma_shadow_dB)
                     total_loss_dB = PL_dB + shadowing_dB
 
                     rayleigh_fading = np.abs(np.random.rayleigh(scale=1.0)) ** 2
                     H[i, j] = 10 ** (-total_loss_dB / 10) * rayleigh_fading
-                else :
-                    H[i, j] = np.abs(np.random.rayleigh(scale=1.0)) ** 2
-
-
-                    
+                #else :
+                #    H[i, j] = np.abs(np.random.rayleigh(scale=1.0)) ** 2    
         return H
-
     def interferensi(self, power,channel_gain):
         interferensi = np.zeros((self.nodes, self.nodes))
         for i in range(self.nodes):
@@ -174,7 +152,7 @@ class GameState:
                     interferensi[i][j] = channel_gain[i][j] * power [i]
                 else:
                     interferensi[i][j] = 0
-        return interferensi
+        return interferensi        
     def hitung_sinr(self, channel_gain, interferensi, power):
         sinr = np.zeros(self.nodes)
         for node_idx in range(self.nodes):
