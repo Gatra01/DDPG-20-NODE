@@ -22,7 +22,7 @@ parser.add_argument('--Loadmodel', type=str2bool, default=False, help='Load pret
 parser.add_argument('--ModelIdex', type=int, default=100, help='which model to load')
 
 parser.add_argument('--seed', type=int, default=0, help='random seed')
-parser.add_argument('--Max_train_steps', type=int, default = 100000, help='Max training steps') #aslinya 5e6
+parser.add_argument('--Max_train_steps', type=int, default = 150000, help='Max training steps') #aslinya 5e6
 parser.add_argument('--save_interval', type=int, default=2500, help='Model saving interval, in steps.') #aslinya 1e5
 parser.add_argument('--eval_interval', type=int, default=2000, help='Model evaluating interval, in steps.') #aslinya 2e3
 
@@ -47,8 +47,8 @@ def main():
     BrifEnvName = ['6G', 'LLdV2', 'Humanv4', 'HCv4','BWv3', 'BWHv3']
     
     # Build Env
-    env = GameState(10,10)
-    eval_env = GameState(10,10)
+    env = GameState(10,15)
+    eval_env = GameState(10,15)
     opt.state_dim = env.observation_space
     opt.action_dim = env.action_space
     opt.max_action = env.p_max   #remark: action space【-max,max】
