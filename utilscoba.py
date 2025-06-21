@@ -11,7 +11,7 @@ import torch.nn.functional as F
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-
+'''
 class Actori(nn.Module):#efficient fair
     def __init__(self, state_dim, action_dim, net_width, Pmax):
         super().__init__()
@@ -119,8 +119,52 @@ class Actor(nn.Module):
  #       # project
         w = torch.clamp(v - theta.unsqueeze(-1), min=0.0)     # [B, n]
         return w
+'''
 
+class Actor(nn.Module):
+    """
+    Deterministic actor that directly predicts per-node power allocations.
+    Ensures p_i ≥ 0 and p_i ≤ Pmax individually, but does not enforce sum(p_i) ≤ Pmax.
+    To add a sum-constraint, incorporate a soft penalty on sum(p) in your reward.
+    """
+    def __init__(self, state_dim: int, action_dim: int, net_width: int, Pmax: float):
+        super().__init__()
+        self.Pmax = Pmax
 
+        # shared feature extractor
+        self.net = nn.Sequential(
+            nn.Linear(state_dim, net_width),
+            nn.ReLU(),
+            nn.LayerNorm(net_width),
+
+            nn.Linear(net_width, net_width // 2),
+            nn.ReLU(),
+            nn.LayerNorm(net_width // 2),
+
+            nn.Linear(net_width // 2, net_width // 4),
+            nn.ReLU(),
+            nn.LayerNorm(net_width // 4),
+        )
+
+        # head: predict raw positive power values
+        self.out_head = nn.Linear(net_width // 4, action_dim)
+
+        # initialize head weights small to avoid saturation
+        nn.init.uniform_(self.out_head.weight, -3e-3, 3e-3)
+        nn.init.zeros_(self.out_head.bias)
+
+    def forward(self, state: torch.Tensor) -> torch.Tensor:
+        """
+        Args:
+            state: [B, state_dim] input feature vector.
+
+        Returns:
+            p: [B, action_dim] with 0 <= p_ij <= Pmax.
+        """
+        x = self.net(state)                       # [B, net_width//4]
+        raw_p = F.softplus(self.out_head(x))      # [B, action_dim], >= 0
+        p = torch.clamp(raw_p, max=self.Pmax)     # enforce p_i <= Pmax
+        return p
 class Q_Critic(nn.Module):
     def __init__(self, state_dim, action_dim, net_width=1024):
         super().__init__()
