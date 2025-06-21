@@ -7,13 +7,14 @@ class GameState:
         self.nodes = nodes
         self.p_max = p_max
         self.gamma = 0.01
+        self.gammal=0.1
         self.beta = 1
         self.noise_power = 0.01
         self.area_size = area_size
         self.positions = self.generate_positions()
         self.observation_space = 2*nodes * nodes + nodes  # interferensi, channel gain, power
         self.action_space = nodes
-        self.p = np.random.uniform(0, 3, size=self.nodes)
+        self.p = np.random.uniform(0, 10, size=self.nodes)
     def sample_valid_power(self):
         rand = np.random.rand(self.nodes)
         rand /= np.sum(rand)
@@ -54,14 +55,21 @@ class GameState:
         EE=self.hitung_efisiensi_energi(power,data_rate)
         
         total_daya=np.sum(power)
+        total_rate  = np.sum(data_rate)
         
         # Condition 1: Budget exceeded
         fail_power = total_daya > self.p_max
 
-        # Condition 2: Any data rate below threshold
-        #min_rate = 0.5
-        #fail_rate = np.any(data_rate < min_rate)
+        rate_violation = np.sum(np.maximum(0.152 - data_rate, 0.0))
+        penalty_rate   = self.beta * rate_violation
+    
 
+        # 2) Power violation: only when total_power > p_max
+        power_violation = max(0.0, total_daya - self.p_max)
+        penalty_power   = self.gammal * power_violation
+
+        # Reward: throughput minus penalties
+        reward = total_rate - penalty_rate - penalty_power
         # Final done flag for “dead/win”
         dw = bool(fail_power)
 
@@ -79,9 +87,9 @@ class GameState:
         'data_rate10': data_rate[9],
         'total_power': float(np.sum(power))
         }
-        reward = -np.sum(data_rate_constraint) + EE - 1*self.step_function(total_daya-self.p_max)
-        if reward > 0 :
-            reward += 3
+        #reward = -np.sum(data_rate_constraint) + EE - 1*self.step_function(total_daya-self.p_max)
+        #if reward > 0 :
+        #    reward += 3
         obs = np.concatenate([self.norm(next_channel_gain).ravel(),self.norm(next_intr).ravel(),self.norm(power)])
         return obs.astype(np.float32), float(reward), dw,False, info
     def norm(self,x):
