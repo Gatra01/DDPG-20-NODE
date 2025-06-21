@@ -200,29 +200,6 @@ def main():
                                 writer.add_scalar('energi efisiensi random', result1['avg_EE_rand'], global_step=st)
                                 writer.add_scalar('total daya', result1['avg_power'], global_step=st)
                                 writer.add_scalar('constraint daya', result1['pct_power_ok'], global_step=st)
-                                '''
-                                writer.add_scalar('constraint data rate', result1['pct_data_ok'], global_step=st)
-                                writer.add_scalar('constraint daya random', result1['pct_power_ok_rand'], global_step=st)
-                                writer.add_scalar('constraint data rate random', result1['pct_data_ok_rand'], global_step=st)
-                                writer.add_scalar('data_rate_1', result1['data_rate_1'], global_step=st)
-                                writer.add_scalar('data_rate_7', result1['data_rate_7'], global_step=st)
-                                writer.add_scalar('data_rate_8', result1['data_rate_8'], global_step=st)
-                                
-                             #   writer.add_scalar('data_rate_11', result1['data_rate_11'], global_step=st)
-                             #   writer.add_scalar('data_rate_15', result1['data_rate_15'], global_step=st)
-                             #   writer.add_scalar('data_rate_20', result1['data_rate_20'], global_step=st)
-                                writer.add_scalar('data_rate_2', result1['data_rate_2'], global_step=st)
-                                writer.add_scalar('data_rate_3', result1['data_rate_3'], global_step=st)
-                                writer.add_scalar('data_rate_4', result1['data_rate_4'], global_step=st)
-                                writer.add_scalar('data_rate_5', result1['data_rate_5'], global_step=st)
-                                writer.add_scalar('data_rate_6', result1['data_rate_6'], global_step=st)
-                                writer.add_scalar('data_rate_9', result1['data_rate_9'], global_step=st)
-                                writer.add_scalar('data_rate_10', result1['data_rate_10'], global_step=st)
-                                writer.add_scalar('data_rate_pass', result1['data_rate_pass'], global_step=st)
-                                writer.add_scalar('data_rate_random_pass', result1['data_rate_rand_pass'], global_step=st)
-                                writer.add_scalar('jumlah data rate', result1['data_rate_total'], global_step=st)
-                                writer.add_scalar('jumlah data rate random', result1['data_rate_total_rand'], global_step=st)
-                                '''
                             print(f'EnvName:{BrifEnvName[opt.EnvIdex]}, Steps: {int(st)}')
                             st+=1
                         
