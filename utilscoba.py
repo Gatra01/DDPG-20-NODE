@@ -12,7 +12,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-class Actor(nn.Module):#efficient fair
+class Actori(nn.Module):#efficient fair
     def __init__(self, state_dim, action_dim, net_width, Pmax):
         super().__init__()
         self.Pmax = Pmax
@@ -71,54 +71,54 @@ class Actor(nn.Module):#efficient fair
         p = dist_final * total_power.unsqueeze(-1)        # [B, A], sum ≤ Pmax
         return p
 
-#class Actor(nn.Module):
-#    def __init__(self, state_dim, action_dim, net_width, Pmax):
-#        super().__init__()
-#        # shared trunk (sama seperti sebelumnya)
-#        self.net = nn.Sequential(
-#            nn.Linear(state_dim, net_width),
-#            nn.ReLU(),
-#            nn.LayerNorm(net_width),
-#
-#            nn.Linear(net_width, net_width//2),
-#            nn.ReLU(),
-#            nn.LayerNorm(net_width//2),
-#
-#            nn.Linear(net_width//2, net_width//4),
-#            nn.ReLU(),
-#            nn.LayerNorm(net_width//4),
-#        )
-#        # single head: raw power allocations
-#        self.out_head = nn.Linear(net_width//4, action_dim)
-#        self.Pmax = Pmax
+class Actor(nn.Module):
+    def __init__(self, state_dim, action_dim, net_width, Pmax):
+        super().__init__()
+        # shared trunk (sama seperti sebelumnya)
+        self.net = nn.Sequential(
+            nn.Linear(state_dim, net_width),
+            nn.ReLU(),
+            nn.LayerNorm(net_width),
 
-#    def forward(self, state):
-#        x = self.net(state)               # [B, net_width//4]
-#        raw_p = self.out_head(x)          # [B, action_dim]
-#        p_pos = F.relu(raw_p)             # ≥ 0
-#        p = self._project_simplex(p_pos)  # ensure sum ≤ Pmax
-#        return p
+            nn.Linear(net_width, net_width//2),
+            nn.ReLU(),
+            nn.LayerNorm(net_width//2),
 
-#    def _project_simplex(self, v: torch.Tensor) -> torch.Tensor:
+            nn.Linear(net_width//2, net_width//4),
+            nn.ReLU(),
+            nn.LayerNorm(net_width//4),
+        )
+        # single head: raw power allocations
+        self.out_head = nn.Linear(net_width//4, action_dim)
+        self.Pmax = Pmax
+
+    def forward(self, state):
+        x = self.net(state)               # [B, net_width//4]
+        raw_p = self.out_head(x)          # [B, action_dim]
+        p_pos = F.relu(raw_p)             # ≥ 0
+        p = self._project_simplex(p_pos)  # ensure sum ≤ Pmax
+        return p
+
+    def _project_simplex(self, v: torch.Tensor) -> torch.Tensor:
         """
         Projects each row of v onto the simplex {p >= 0, sum(p) <= Pmax}.
         Uses the algorithm from:
         "Efficient Projections onto the l1-ball for Learning in High Dimensions" (Duchi et al., 2008).
         """
         # v: [B, n]
- #       B, n = v.size()
- #       # sort in descending order
- #       v_sorted, _ = torch.sort(v, descending=True, dim=-1)  # [B, n]
- #       cssv = v_sorted.cumsum(dim=-1)                       # cumulative sum
- #       arange = torch.arange(1, n+1, device=v.device).view(1, -1)
+        B, n = v.size()
+        # sort in descending order
+        v_sorted, _ = torch.sort(v, descending=True, dim=-1)  # [B, n]
+        cssv = v_sorted.cumsum(dim=-1)                       # cumulative sum
+        arange = torch.arange(1, n+1, device=v.device).view(1, -1)
  #       # find the rho index for each batch
- #       cond = v_sorted - (cssv - self.Pmax) / arange > 0     # [B, n]
- #       rho = cond.sum(dim=-1) - 1                            # [B]
+        cond = v_sorted - (cssv - self.Pmax) / arange > 0     # [B, n]
+        rho = cond.sum(dim=-1) - 1                            # [B]
  #       # compute theta for each batch
- #       theta = (cssv[torch.arange(B), rho] - self.Pmax) / (rho + 1).float()  # [B]
+        theta = (cssv[torch.arange(B), rho] - self.Pmax) / (rho + 1).float()  # [B]
  #       # project
- #       w = torch.clamp(v - theta.unsqueeze(-1), min=0.0)     # [B, n]
- #       return w
+        w = torch.clamp(v - theta.unsqueeze(-1), min=0.0)     # [B, n]
+        return w
 
 
 class Q_Critic(nn.Module):
