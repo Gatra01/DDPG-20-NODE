@@ -7,7 +7,7 @@ class GameState:
         self.nodes = nodes
         self.p_max = p_max
         self.gamma = 0.01
-        self.gammal=0.1
+        self.gammal=0.05
         self.beta = 1
         self.noise_power = 0.01
         self.area_size = area_size
@@ -61,7 +61,7 @@ class GameState:
         fail_power = total_daya > self.p_max
 
         rate_violation = np.sum(np.maximum(0.152 - data_rate, 0.0))
-        penalty_rate   = self.beta * rate_violation
+        penalty_rate   = 5 * rate_violation
     
 
         # 2) Power violation: only when total_power > p_max
